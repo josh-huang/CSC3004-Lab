@@ -19,9 +19,9 @@ import logging
 
 import grpc
 
-import calculator_pb2
-import calculator_pb2_grpc
+import SafeEntry_pb2
 
+import SafeEntry_pb2_grpc
 
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
@@ -29,17 +29,19 @@ def run():
     # of the code.
     with grpc.insecure_channel("localhost:50051") as channel:
         
-        stub = calculator_pb2_grpc.CalculatorStub(channel)
-        response = stub.Add(calculator_pb2.Request(x=5, y=6))
+        #indicate the stub 
+        stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)
+        
+        response = stub.Add(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
 
-        response = stub.Sub(calculator_pb2.Request(x=5, y=6))
+        response = stub.Sub(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
 
-        response = stub.Multiply(calculator_pb2.Request(x=5, y=6))
+        response = stub.Multiply(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
 
-        response = stub.Divide(calculator_pb2.Request(x=5, y=6))
+        response = stub.Divide(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
 
 

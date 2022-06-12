@@ -1,7 +1,9 @@
 Client: 
-1. perform check-in and check-out((randomly generated)names, NRIC, location, time, status of the location(1,0) (all these info store in an array)), group check-in and check-out
+1. perform check-in and check-out((randomly generated)names, NRIC, location, time, status of the location(1,0) (all these info store in an array)), 
+group check-in and check-out
 2. List of all safeEntry location (2D arrary)
-3. Send notification to all the people who visited covid places (locations, check-in and check-out time) (retrieve data from the 2D array for location status = 1)
+3. Send notification to all the people who visited covid places (locations, check-in and check-out time) 
+(retrieve data from the 2D array for location status = 1)
 
 getCheckInData()
 
