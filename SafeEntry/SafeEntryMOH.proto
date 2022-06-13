@@ -10,7 +10,7 @@ service SafeEntry {
   rpc Divide (Request) returns (Reply) {}
 }
 
-// The request message containing the user's name, NRIC, location, and check in check out time 
+// The request message containing the user's name, location, .
 message Request {
   int32 x = 1;
   int32 y = 2;

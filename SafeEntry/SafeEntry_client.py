@@ -23,14 +23,20 @@ import SafeEntry_pb2
 
 import SafeEntry_pb2_grpc
 
+random_location = []
+
 def run():
-    # NOTE(gRPC Python Team): .close() is possible on a channel and should be
-    # used in circumstances in which the with statement does not fit the needs
-    # of the code.
+    
     with grpc.insecure_channel("localhost:50051") as channel:
         
         #indicate the stub 
         stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)
+        
+        # check in and check out for individual and group 
+        
+        # Display SafeEntry Information  
+        
+        # receive sms notification if visited covid places 
         
         response = stub.Add(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
@@ -43,6 +49,10 @@ def run():
 
         response = stub.Divide(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
+        
+
+def getLocation():
+    pass 
 
 
 if __name__ == "__main__":
