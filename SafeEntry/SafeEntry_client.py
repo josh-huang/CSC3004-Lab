@@ -29,10 +29,31 @@ def run():
     
     with grpc.insecure_channel("localhost:50051") as channel:
         
-        #indicate the stub 
+        # indicate the stub 
         stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)
         
         # check in and check out for individual and group 
+        user_choice = input("Which function do you wish to perform?")
+        
+        if user_choice == "1":
+            # check in function 
+            pass
+            
+        elif user_choice == "2":
+            # check out function 
+            pass
+        
+        elif user_choice == "3":
+            # group check in function 
+            pass
+        
+        elif user_choice == "4":
+            # group check out function 
+            pass
+        
+        elif user_choice == "5":
+            # display location function  
+            pass
         
         # Display SafeEntry Information  
         
@@ -50,9 +71,11 @@ def run():
         response = stub.Divide(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
         
-
+# function to return all the location that visited by the client 
 def getLocation():
-    pass 
+    # get location from the list 
+    for i in location_list:
+        print(i)
 
 
 if __name__ == "__main__":
