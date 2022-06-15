@@ -23,7 +23,11 @@ import SafeEntry_pb2
 
 import SafeEntry_pb2_grpc
 
-random_location = []
+# implement random location array
+from location_scrap import random_location
+
+# get time now 
+
 
 def run():
     
@@ -33,7 +37,7 @@ def run():
         stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)
         
         # check in and check out for individual and group 
-        user_choice = input("Which function do you wish to perform?")
+        user_choice = input("Which function do you wish to perform? ")
         
         if user_choice == "1":
             # check in function 
@@ -54,8 +58,6 @@ def run():
         elif user_choice == "5":
             # display location function  
             pass
-        
-        # Display SafeEntry Information  
         
         # receive sms notification if visited covid places 
         

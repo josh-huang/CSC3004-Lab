@@ -51,6 +51,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     # for MOH use 
     def updateLocation(self, request, context):
         #TO-DO Implement update location 
+        pass
         # receive location name and iterate through location info and send notification to all the names in the array 
 
 
