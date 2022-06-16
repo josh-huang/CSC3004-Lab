@@ -1,18 +1,3 @@
-# Copyright 2015 gRPC authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""The Python implementation of the GRPC helloworld.Greeter client."""
-
 from __future__ import print_function
 
 import logging
@@ -23,46 +8,58 @@ import SafeEntry_pb2
 
 import SafeEntry_pb2_grpc
 
-# implement random location array
 from location_scrap import random_location
 
-# get time now 
+from datetime import datetime
 
 
 def run():
     
     with grpc.insecure_channel("localhost:50051") as channel:
         
+        now = datetime.now()
+        
+        # get current time  
+        current_time = now.strftime("%H:%M:%S")
+        
+        # get user name and id 
+        user_name = str(input('Enter your name: '))
+        user_id = int(input('\nEnter your id: '))
+        
         # indicate the stub 
         stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)
         
         # check in and check out for individual and group 
-        user_choice = input("Which function do you wish to perform? ")
+        user_choice = input("\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [4]. Display all the locations\n")
         
+        # user choose Check in function 
         if user_choice == "1":
             # check in function 
-            pass
-            
+            response = stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, ))
+            print(str(response.res))
+        
+        # user choose Check out function 
         elif user_choice == "2":
             # check out function 
             pass
         
+        # user choose Group check in function 
         elif user_choice == "3":
             # group check in function 
             pass
         
+        # user choose Group check out function 
         elif user_choice == "4":
             # group check out function 
             pass
         
+        # user choose display location history function 
         elif user_choice == "5":
             # display location function  
             pass
         
         # receive sms notification if visited covid places 
         
-        response = stub.Add(SafeEntry_pb2.Request(x=5, y=6))
-        print("The result of Add Function is: " + str(response.res))
 
         response = stub.Sub(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
