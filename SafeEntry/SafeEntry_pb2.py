@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"S\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"X\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\" \n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"!\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"#\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t2\x90\x01\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"S\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"X\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\" \n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"!\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"7\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\x12\x12\n\nvisit_date\x18\x02 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t2\xa1\x02\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12\x46\n\x0cgroupcheckIn\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12G\n\rgroupcheckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x62\x06proto3')
 
 
 
@@ -119,9 +119,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _GROUPCHECKOUTREPLY._serialized_start=477
   _GROUPCHECKOUTREPLY._serialized_end=510
   _MOHREQUEST._serialized_start=512
-  _MOHREQUEST._serialized_end=547
-  _MOHREPLY._serialized_start=549
-  _MOHREPLY._serialized_end=572
-  _SAFEENTRY._serialized_start=575
-  _SAFEENTRY._serialized_end=719
+  _MOHREQUEST._serialized_end=567
+  _MOHREPLY._serialized_start=569
+  _MOHREPLY._serialized_end=592
+  _SAFEENTRY._serialized_start=595
+  _SAFEENTRY._serialized_end=884
 # @@protoc_insertion_point(module_scope)

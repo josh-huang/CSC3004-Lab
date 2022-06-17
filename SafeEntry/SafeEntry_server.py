@@ -23,21 +23,29 @@ covid_location = []
 
 class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
-    #To be deleted 
-    def Sub(self, request, context):
-        return SafeEntry_pb2.Reply(res=request.x - request.y)
-    
     # individual check in function 
     def checkIn(self, request, context):
-        if request.name not in client_info:
-            client_info[request.name]=[request.id, request.location, request.check_in_time]
+        # print out the request message
+        print("Check in request received: ")
+        print(request)
         
-        # reply_message = 'Check In ' + request.location + ' successful' + 
+        if (request.id, request.name) not in client_info:
+            client_info[request.id, request.name]= [[request.location , request.check_in_time]]
+        else:
+            client_info[request.id, request.name].append([request.location, request.check_in_time])
+        
+        reply_message = 'Check In ' + request.location + ' successful' 
+        
+        print(client_info)
             
-        return SafeEntry_pb2.CheckInReply(res="reply_message")
+        return SafeEntry_pb2.CheckInReply(res=reply_message)
     
     # individual check out function 
     def checkOut(self, request, context):
+        # print out the request message
+        print("Check out request received: ")
+        print(request)
+        
         if request.name not in client_info:
             client_info.append([request.name, request.id, request.location])
             
@@ -66,14 +74,19 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     def getNotification(self, request, context):
         pass
     
-    def getCurrentTime():
+    # get all the location that visited by the client
+    def getLocation(self, request, context):
+        pass
+    
+    # get current time function
+    def getCurrentTime(self):
         now = datetime.now()
             # get current time  
         current_time = now.strftime("%H:%M:%S")
         return current_time
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=5), maximum_concurrent_rpcs=10)
     #add SafeEntry Servicier to the server
     SafeEntry_pb2_grpc.add_SafeEntryServicer_to_server(SafeEntry(), server)            
     server.add_insecure_port("[::]:50051")
