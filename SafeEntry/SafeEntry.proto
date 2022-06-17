@@ -31,7 +31,7 @@ message CheckOutRequest {
   string check_out_time = 4;
 }
 
-// The response message containing the greetings
+// The response message containing the check out reply message 
 message CheckOutReply {
   string res = 1;
 }

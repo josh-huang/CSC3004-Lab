@@ -8,11 +8,16 @@ import SafeEntry_pb2
 
 import SafeEntry_pb2_grpc
 
+from location_scrap import random_location
+
 # client_info dictionary: key: client id value : array[name, location, checkin time]
 client_info = {}
 
 # location_info dictionary: key: Location name value: array[id]
 location_info={}
+
+# covid location array to store covid locations
+covid_location = []
 
 class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
