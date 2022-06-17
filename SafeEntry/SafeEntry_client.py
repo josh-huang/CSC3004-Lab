@@ -41,7 +41,8 @@ def run():
         # user choose Check out function 
         elif user_choice == "2":
             # check out function 
-            pass
+            response = stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, ))
+            print(str(response.res))
         
         # user choose Group check in function 
         elif user_choice == "3":
