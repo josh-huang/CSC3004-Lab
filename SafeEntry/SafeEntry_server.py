@@ -12,7 +12,7 @@ from location_scrap import random_location
 
 from datetime import datetime
 
-# client_info dictionary: key: client id value : array[name, location, checkin time]
+# client_info dictionary: key: (id,name) value : array[location, checkin time]
 client_info = {}
 
 # location_info dictionary: key: Location name value: array[id]
