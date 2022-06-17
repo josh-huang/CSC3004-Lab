@@ -16,7 +16,7 @@ from datetime import datetime
 client_info = {}
 
 # location_info dictionary: key: Location name value: array[id]
-location_info={}
+location_info= {}
 
 # covid location array to store covid locations
 covid_location = []
@@ -32,9 +32,9 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         if request.name not in client_info:
             client_info[request.name]=[request.id, request.location, request.check_in_time]
         
-        reply_message = 'Check In ' + request.location + ' successful' + 
+        # reply_message = 'Check In ' + request.location + ' successful' + 
             
-        return SafeEntry_pb2.CheckInReply(res=reply_message)
+        return SafeEntry_pb2.CheckInReply(res="reply_message")
     
     # individual check out function 
     def checkOut(self, request, context):

@@ -24,7 +24,7 @@ def run():
         
         # get user name and id 
         user_name = str(input('Enter your name: '))
-        user_id = int(input('\nEnter your id: '))
+        user_id = int(input('Enter your id: '))
         
         # indicate the stub 
         stub = SafeEntry_pb2_grpc.SafeEntryStub(channel)

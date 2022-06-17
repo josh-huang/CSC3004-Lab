@@ -5,9 +5,7 @@ package SafeEntry;
 // The greeting service definition.
 service SafeEntry {
   rpc checkIn (CheckInRequest) returns (CheckInReply) {}
-  rpc checkOut (CheckOutRequest) returns (CheckOuTRequest) {}
-  rpc Multiply (Request) returns (Reply) {}
-  rpc Divide (Request) returns (Reply) {}
+  rpc checkOut (CheckOutRequest) returns (CheckOutReply) {}
 }
 
 // The request message containing the user's name, NRIC, location, and check in check out time 

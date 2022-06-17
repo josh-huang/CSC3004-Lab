@@ -15,25 +15,15 @@ class SafeEntryStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Add = channel.unary_unary(
-                '/SafeEntry.SafeEntry/Add',
-                request_serializer=SafeEntry__pb2.Request.SerializeToString,
-                response_deserializer=SafeEntry__pb2.Reply.FromString,
+        self.checkIn = channel.unary_unary(
+                '/SafeEntry.SafeEntry/checkIn',
+                request_serializer=SafeEntry__pb2.CheckInRequest.SerializeToString,
+                response_deserializer=SafeEntry__pb2.CheckInReply.FromString,
                 )
-        self.Sub = channel.unary_unary(
-                '/SafeEntry.SafeEntry/Sub',
-                request_serializer=SafeEntry__pb2.Request.SerializeToString,
-                response_deserializer=SafeEntry__pb2.Reply.FromString,
-                )
-        self.Multiply = channel.unary_unary(
-                '/SafeEntry.SafeEntry/Multiply',
-                request_serializer=SafeEntry__pb2.Request.SerializeToString,
-                response_deserializer=SafeEntry__pb2.Reply.FromString,
-                )
-        self.Divide = channel.unary_unary(
-                '/SafeEntry.SafeEntry/Divide',
-                request_serializer=SafeEntry__pb2.Request.SerializeToString,
-                response_deserializer=SafeEntry__pb2.Reply.FromString,
+        self.checkOut = channel.unary_unary(
+                '/SafeEntry.SafeEntry/checkOut',
+                request_serializer=SafeEntry__pb2.CheckOutRequest.SerializeToString,
+                response_deserializer=SafeEntry__pb2.CheckOutReply.FromString,
                 )
 
 
@@ -41,25 +31,13 @@ class SafeEntryServicer(object):
     """The greeting service definition.
     """
 
-    def Add(self, request, context):
+    def checkIn(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Sub(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def Multiply(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def Divide(self, request, context):
+    def checkOut(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -68,25 +46,15 @@ class SafeEntryServicer(object):
 
 def add_SafeEntryServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Add': grpc.unary_unary_rpc_method_handler(
-                    servicer.Add,
-                    request_deserializer=SafeEntry__pb2.Request.FromString,
-                    response_serializer=SafeEntry__pb2.Reply.SerializeToString,
+            'checkIn': grpc.unary_unary_rpc_method_handler(
+                    servicer.checkIn,
+                    request_deserializer=SafeEntry__pb2.CheckInRequest.FromString,
+                    response_serializer=SafeEntry__pb2.CheckInReply.SerializeToString,
             ),
-            'Sub': grpc.unary_unary_rpc_method_handler(
-                    servicer.Sub,
-                    request_deserializer=SafeEntry__pb2.Request.FromString,
-                    response_serializer=SafeEntry__pb2.Reply.SerializeToString,
-            ),
-            'Multiply': grpc.unary_unary_rpc_method_handler(
-                    servicer.Multiply,
-                    request_deserializer=SafeEntry__pb2.Request.FromString,
-                    response_serializer=SafeEntry__pb2.Reply.SerializeToString,
-            ),
-            'Divide': grpc.unary_unary_rpc_method_handler(
-                    servicer.Divide,
-                    request_deserializer=SafeEntry__pb2.Request.FromString,
-                    response_serializer=SafeEntry__pb2.Reply.SerializeToString,
+            'checkOut': grpc.unary_unary_rpc_method_handler(
+                    servicer.checkOut,
+                    request_deserializer=SafeEntry__pb2.CheckOutRequest.FromString,
+                    response_serializer=SafeEntry__pb2.CheckOutReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -100,7 +68,7 @@ class SafeEntry(object):
     """
 
     @staticmethod
-    def Add(request,
+    def checkIn(request,
             target,
             options=(),
             channel_credentials=None,
@@ -110,14 +78,14 @@ class SafeEntry(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/Add',
-            SafeEntry__pb2.Request.SerializeToString,
-            SafeEntry__pb2.Reply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/checkIn',
+            SafeEntry__pb2.CheckInRequest.SerializeToString,
+            SafeEntry__pb2.CheckInReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def Sub(request,
+    def checkOut(request,
             target,
             options=(),
             channel_credentials=None,
@@ -127,42 +95,8 @@ class SafeEntry(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/Sub',
-            SafeEntry__pb2.Request.SerializeToString,
-            SafeEntry__pb2.Reply.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Multiply(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/Multiply',
-            SafeEntry__pb2.Request.SerializeToString,
-            SafeEntry__pb2.Reply.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Divide(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/Divide',
-            SafeEntry__pb2.Request.SerializeToString,
-            SafeEntry__pb2.Reply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/checkOut',
+            SafeEntry__pb2.CheckOutRequest.SerializeToString,
+            SafeEntry__pb2.CheckOutReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
