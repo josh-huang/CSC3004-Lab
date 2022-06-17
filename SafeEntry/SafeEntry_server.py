@@ -10,6 +10,8 @@ import SafeEntry_pb2_grpc
 
 from location_scrap import random_location
 
+from datetime import datetime
+
 # client_info dictionary: key: client id value : array[name, location, checkin time]
 client_info = {}
 
@@ -30,7 +32,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         if request.name not in client_info:
             client_info[request.name]=[request.id, request.location, request.check_in_time]
         
-        reply_message = 'Check In ' + request.location + ' successful' +
+        reply_message = 'Check In ' + request.location + ' successful' + 
             
         return SafeEntry_pb2.CheckInReply(res=reply_message)
     
@@ -62,8 +64,13 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     # send sms notification to the clients who has visited covid places
     def getNotification(self, request, context):
-        
         pass
+    
+    def getCurrentTime():
+        now = datetime.now()
+            # get current time  
+        current_time = now.strftime("%H:%M:%S")
+        return current_time
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

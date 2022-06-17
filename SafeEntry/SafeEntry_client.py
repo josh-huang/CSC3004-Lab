@@ -71,7 +71,7 @@ def run():
             
             # receive sms notification if visited covid places 
         
-
+        # To be deleted 
         response = stub.Multiply(SafeEntry_pb2.Request(x=5, y=6))
         print("The result of Add Function is: " + str(response.res))
 
