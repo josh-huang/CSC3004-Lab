@@ -12,9 +12,6 @@ from location_scrap import random_location
 
 from datetime import datetime
 
-# client_info dictionary: key: (id,name) value : array[location, checkin time]
-client_info = {}
-
 # location_info dictionary: key: Location name value: array[id]
 location_info= {}
 
@@ -28,15 +25,18 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # print out the request message
         print("Check in request received: ")
         print(request)
-        
-        if (request.id, request.name) not in client_info:
-            client_info[request.id, request.name]= [[request.location , request.check_in_time]]
-        else:
-            client_info[request.id, request.name].append([request.location, request.check_in_time])
+        # store the client check in details in the client_ingo text file 
+        with open("client_info.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{request.id}  {request.name}  {request.location}  {request.check_in_time} ")
         
         reply_message = 'Check In ' + request.location + ' successful' 
-        
-        print(client_info)
             
         return SafeEntry_pb2.CheckInReply(res=reply_message)
     
@@ -45,11 +45,17 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # print out the request message
         print("Check out request received: ")
         print(request)
-        
-        if request.name not in client_info:
-            client_info.append([request.name, request.id, request.location])
+        # add the check out details in client_info.txt
+        with open("client_info.txt", "a+") as file_object:
+            lines = file_object.readlines()
+            file_object.seek(0)
+            file_object.write("\n")
+            file_object.write(f"{request.id}  {request.name}  {request.location}  {request.check_out_time}  Check Out")
+                    
+        reply_message = 'Check out ' + request.location + ' successful'  
+           
+        return SafeEntry_pb2.CheckOutReply(res=reply_message)
             
-        return SafeEntry_pb2.CheckOutReply(res='Check Out ' + request.location + ' successful')
     
     # group check in function 
     def groupCheckIn(self, request, context):
@@ -76,7 +82,9 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     # get all the location that visited by the client
     def getLocation(self, request, context):
-        pass
+        # print out the get location request message
+        print("Get location request received: ")
+        print(request)
     
     # get current time function
     def getCurrentTime(self):

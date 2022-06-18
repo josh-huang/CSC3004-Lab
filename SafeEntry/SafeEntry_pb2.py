@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"S\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"X\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\" \n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"!\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"7\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\x12\x12\n\nvisit_date\x18\x02 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t2\xa1\x02\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12\x46\n\x0cgroupcheckIn\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12G\n\rgroupcheckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"S\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"X\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\" \n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"!\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"7\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\x12\x12\n\nvisit_date\x18\x02 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"$\n\x0fLocationRequest\x12\x11\n\tuser_name\x18\x01 \x01(\t\"&\n\rLocationReply\x12\x15\n\rlocation_name\x18\x01 \x01(\t2\xee\x02\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12H\n\x0cgroupcheckIn\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00(\x01\x12I\n\rgroupcheckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00(\x01\x12G\n\x0bgetLocation\x12\x1a.SafeEntry.LocationRequest\x1a\x18.SafeEntry.LocationReply\"\x00\x30\x01\x62\x06proto3')
 
 
 
@@ -28,6 +28,8 @@ _GROUPCHECKOUTREQUEST = DESCRIPTOR.message_types_by_name['GroupCheckOutRequest']
 _GROUPCHECKOUTREPLY = DESCRIPTOR.message_types_by_name['GroupCheckOutReply']
 _MOHREQUEST = DESCRIPTOR.message_types_by_name['MOHRequest']
 _MOHREPLY = DESCRIPTOR.message_types_by_name['MOHReply']
+_LOCATIONREQUEST = DESCRIPTOR.message_types_by_name['LocationRequest']
+_LOCATIONREPLY = DESCRIPTOR.message_types_by_name['LocationReply']
 CheckInRequest = _reflection.GeneratedProtocolMessageType('CheckInRequest', (_message.Message,), {
   'DESCRIPTOR' : _CHECKINREQUEST,
   '__module__' : 'SafeEntry_pb2'
@@ -98,6 +100,20 @@ MOHReply = _reflection.GeneratedProtocolMessageType('MOHReply', (_message.Messag
   })
 _sym_db.RegisterMessage(MOHReply)
 
+LocationRequest = _reflection.GeneratedProtocolMessageType('LocationRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LOCATIONREQUEST,
+  '__module__' : 'SafeEntry_pb2'
+  # @@protoc_insertion_point(class_scope:SafeEntry.LocationRequest)
+  })
+_sym_db.RegisterMessage(LocationRequest)
+
+LocationReply = _reflection.GeneratedProtocolMessageType('LocationReply', (_message.Message,), {
+  'DESCRIPTOR' : _LOCATIONREPLY,
+  '__module__' : 'SafeEntry_pb2'
+  # @@protoc_insertion_point(class_scope:SafeEntry.LocationReply)
+  })
+_sym_db.RegisterMessage(LocationReply)
+
 _SAFEENTRY = DESCRIPTOR.services_by_name['SafeEntry']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -122,6 +138,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _MOHREQUEST._serialized_end=567
   _MOHREPLY._serialized_start=569
   _MOHREPLY._serialized_end=592
-  _SAFEENTRY._serialized_start=595
-  _SAFEENTRY._serialized_end=884
+  _LOCATIONREQUEST._serialized_start=594
+  _LOCATIONREQUEST._serialized_end=630
+  _LOCATIONREPLY._serialized_start=632
+  _LOCATIONREPLY._serialized_end=670
+  _SAFEENTRY._serialized_start=673
+  _SAFEENTRY._serialized_end=1039
 # @@protoc_insertion_point(module_scope)

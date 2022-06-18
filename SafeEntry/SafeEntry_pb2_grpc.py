@@ -25,15 +25,20 @@ class SafeEntryStub(object):
                 request_serializer=SafeEntry__pb2.CheckOutRequest.SerializeToString,
                 response_deserializer=SafeEntry__pb2.CheckOutReply.FromString,
                 )
-        self.groupcheckIn = channel.unary_unary(
+        self.groupcheckIn = channel.stream_unary(
                 '/SafeEntry.SafeEntry/groupcheckIn',
                 request_serializer=SafeEntry__pb2.CheckOutRequest.SerializeToString,
                 response_deserializer=SafeEntry__pb2.CheckOutReply.FromString,
                 )
-        self.groupcheckOut = channel.unary_unary(
+        self.groupcheckOut = channel.stream_unary(
                 '/SafeEntry.SafeEntry/groupcheckOut',
                 request_serializer=SafeEntry__pb2.CheckOutRequest.SerializeToString,
                 response_deserializer=SafeEntry__pb2.CheckOutReply.FromString,
+                )
+        self.getLocation = channel.unary_stream(
+                '/SafeEntry.SafeEntry/getLocation',
+                request_serializer=SafeEntry__pb2.LocationRequest.SerializeToString,
+                response_deserializer=SafeEntry__pb2.LocationReply.FromString,
                 )
 
 
@@ -53,13 +58,19 @@ class SafeEntryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def groupcheckIn(self, request, context):
+    def groupcheckIn(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def groupcheckOut(self, request, context):
+    def groupcheckOut(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def getLocation(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -78,15 +89,20 @@ def add_SafeEntryServicer_to_server(servicer, server):
                     request_deserializer=SafeEntry__pb2.CheckOutRequest.FromString,
                     response_serializer=SafeEntry__pb2.CheckOutReply.SerializeToString,
             ),
-            'groupcheckIn': grpc.unary_unary_rpc_method_handler(
+            'groupcheckIn': grpc.stream_unary_rpc_method_handler(
                     servicer.groupcheckIn,
                     request_deserializer=SafeEntry__pb2.CheckOutRequest.FromString,
                     response_serializer=SafeEntry__pb2.CheckOutReply.SerializeToString,
             ),
-            'groupcheckOut': grpc.unary_unary_rpc_method_handler(
+            'groupcheckOut': grpc.stream_unary_rpc_method_handler(
                     servicer.groupcheckOut,
                     request_deserializer=SafeEntry__pb2.CheckOutRequest.FromString,
                     response_serializer=SafeEntry__pb2.CheckOutReply.SerializeToString,
+            ),
+            'getLocation': grpc.unary_stream_rpc_method_handler(
+                    servicer.getLocation,
+                    request_deserializer=SafeEntry__pb2.LocationRequest.FromString,
+                    response_serializer=SafeEntry__pb2.LocationReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -134,7 +150,7 @@ class SafeEntry(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def groupcheckIn(request,
+    def groupcheckIn(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -144,14 +160,14 @@ class SafeEntry(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/groupcheckIn',
+        return grpc.experimental.stream_unary(request_iterator, target, '/SafeEntry.SafeEntry/groupcheckIn',
             SafeEntry__pb2.CheckOutRequest.SerializeToString,
             SafeEntry__pb2.CheckOutReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def groupcheckOut(request,
+    def groupcheckOut(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -161,8 +177,25 @@ class SafeEntry(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/groupcheckOut',
+        return grpc.experimental.stream_unary(request_iterator, target, '/SafeEntry.SafeEntry/groupcheckOut',
             SafeEntry__pb2.CheckOutRequest.SerializeToString,
             SafeEntry__pb2.CheckOutReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def getLocation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/SafeEntry.SafeEntry/getLocation',
+            SafeEntry__pb2.LocationRequest.SerializeToString,
+            SafeEntry__pb2.LocationReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

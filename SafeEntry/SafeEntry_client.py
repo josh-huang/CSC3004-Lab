@@ -1,4 +1,5 @@
 from __future__ import print_function
+from http.client import ResponseNotReady
 
 import logging
 
@@ -29,7 +30,7 @@ class SafeEntryClient(object):
         self.current_location = []
         
     def run(self):
-        user_choice = str(input("\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display all the locations\n"))
+        user_choice = str(input("\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
             
         # user choose Check in function 
         if user_choice == "1":
@@ -65,20 +66,36 @@ class SafeEntryClient(object):
         self.current_location.append(user_location)
         # get current time 
         current_time = self.getCurrentTime()
+        # get response from server 
         response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
+        print("Response Received: ")
         print(str(response.res))
         
     # individual check out function 
     def checkOut(self):
+        # check out location 
         check_out_location = random.choice(self.current_location)
+        # call current time function 
         current_time = self.getCurrentTime()
+        # remove the location from current location array 
         self.current_location.remove(check_out_location)
-        response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, location=check_out_location, check_in_time=current_time))
+        # get response from server 
+        response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=user_name, id=user_id, location=check_out_location, check_out_time=current_time))
+        print("Response Received: ")
         print(str(response.res))
         
     # group check out function 
     def groupCheckIn(self):
-        pass
+        user_location = random.choice(random_location)
+        # append the location in all_location and current_location array 
+        self.all_location.append(user_location)
+        self.current_location.append(user_location)
+        # get current time 
+        current_time = self.getCurrentTime()
+        # get response from server 
+        response = self.stub.checkIn(SafeEntry_pb2.GroupCheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
+        print("Response Received: ")
+        print(str(response.res))
     
     # group check out function 
     def groupCheckOut(self):
@@ -86,9 +103,11 @@ class SafeEntryClient(object):
         
     # function to return all the location that visited by the client 
     def getAllLocation(self):
-        # get location from the list 
-        for i in self.all_location:
-            print(str(i)+'\n')
+        location_request = SafeEntry_pb2.GroupCheckInRequest(name=user_name)
+        response = self.stub.getLocation(location_request)
+        
+        for reply in response:
+            print(reply + '\n')
             
     # get current time function
     def getCurrentTime(self):
