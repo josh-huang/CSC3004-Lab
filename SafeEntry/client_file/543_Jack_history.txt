@@ -1,0 +1,21 @@
+Kampong Glam  20:54:25  Check In
+Victoria  20:54:54  Check In
+National University of Singapore  20:54:55  Check In
+Singapore River  20:54:55  Check In
+Chinatown  20:54:55  Check In
+Bukit Merah  20:54:56  Check In
+Queenstown  20:54:56  Check In
+National University of Singapore  20:54:56  Check In
+Singapore River
+  20:55:04  Check Out
+National University of Singapore  20:55:57  Check Out
+Kampong Glam
+  20:56:35  Check Out
+Chinatown
+  20:56:40  Check Out
+Queenstown
+  20:56:41  Check Out
+Bukit Merah
+  20:56:42  Check Out
+Victoria
+  20:56:43  Check Out

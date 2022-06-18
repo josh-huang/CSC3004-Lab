@@ -2,6 +2,7 @@ from __future__ import print_function
 from http.client import ResponseNotReady
 
 import logging
+from tabnanny import check
 
 import grpc
 
@@ -25,12 +26,9 @@ class SafeEntryClient(object):
         # get user name and user id 
         self.user_name = name
         self.user_id = id
-        # initate one arrays to store all locations visited by client and one array to store current locations
-        self.all_location = []
-        self.current_location = []
         
     def run(self):
-        user_choice = str(input("\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
+        user_choice = str(input("\n\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
             
         # user choose Check in function 
         if user_choice == "1":
@@ -62,10 +60,40 @@ class SafeEntryClient(object):
         # user check in location (use random location to simulate)
         user_location = random.choice(random_location)
         # append the location in all_location and current_location array 
-        self.all_location.append(user_location)
-        self.current_location.append(user_location)
+        # self.all_location.append(user_location)
+        # self.current_location.append(user_location)
         # get current time 
         current_time = self.getCurrentTime()
+        # store the client check in and check out details in the {request.id}_{request.name}_history text file 
+        with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{user_location}  {current_time}  Check In")
+        # store the client current locations in the {request.id}_{request.name}_current text file    
+        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{user_location}")
+        # store the client all locations in the {request.id}_{request.name}_all text file    
+        with open(f"client_file/{self.user_id}_{self.user_name}_all.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{user_location}")
         # get response from server 
         response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
         print("Response Received: ")
@@ -73,12 +101,34 @@ class SafeEntryClient(object):
         
     # individual check out function 
     def checkOut(self):
-        # check out location 
-        check_out_location = random.choice(self.current_location)
         # call current time function 
         current_time = self.getCurrentTime()
-        # remove the location from current location array 
-        self.current_location.remove(check_out_location)
+        current_check_in_location = []
+        # select one of the current location to perform check out function 
+        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "r+") as file_object:
+            lines = file_object.readlines()
+            for line in lines:
+                current_check_in_location.append(line)
+        # with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "r+") as file_object:
+        #     lines = file_object.readlines()
+        #     for line in lines:
+        #         if "Check Out" not in line:
+        #             current_check_in_location.append(line.split("  ",1)[0])
+        # 
+        with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "a") as file_object1:
+            check_out_location = random.choice(current_check_in_location)
+            file_object1.seek(0)
+            # file_object1.write("\n")
+            file_object1.write(f"\n{check_out_location}  {current_time}  Check Out")
+            
+        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "r") as file_object2:
+            lines = file_object2.readlines()
+        
+        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "w") as file_object3:
+            for line in lines:
+                if str(check_out_location) not in line:
+                    file_object3.writelines(line)
+                    
         # get response from server 
         response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=user_name, id=user_id, location=check_out_location, check_out_time=current_time))
         print("Response Received: ")
@@ -92,6 +142,7 @@ class SafeEntryClient(object):
         self.current_location.append(user_location)
         # get current time 
         current_time = self.getCurrentTime()
+        
         # get response from server 
         response = self.stub.checkIn(SafeEntry_pb2.GroupCheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
         print("Response Received: ")
@@ -124,7 +175,10 @@ if __name__ == "__main__":
     user_id = int(input('Enter your id: '))
     # initial user client object
     client = SafeEntryClient(user_name, user_id)
-    while True: 
+    # main loop
+    user_decision=''
+    while user_decision != "e" and user_decision != "E": 
         client.run()
+        user_decision = str(input("Press E to exit the program or other other button to continue.\n"))
         
     

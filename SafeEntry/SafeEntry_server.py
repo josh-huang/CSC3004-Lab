@@ -25,8 +25,8 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # print out the request message
         print("Check in request received: ")
         print(request)
-        # store the client check in details in the client_ingo text file 
-        with open("client_info.txt", "a+") as file_object:
+        # store the client check in details in the {request.id}_{request.name}_info text file 
+        with open(f"server_file/{request.id}_{request.name}_info.txt", "a+") as file_object:
             # Move read cursor to the start of file.
             file_object.seek(0)
             # If file is not empty then append '\n'
@@ -34,7 +34,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             if len(data) > 0 :
                 file_object.write("\n")
             # Append text at the end of file
-            file_object.write(f"{request.id}  {request.name}  {request.location}  {request.check_in_time} ")
+            file_object.write(f"{request.location}  {request.check_in_time} ")
         
         reply_message = 'Check In ' + request.location + ' successful' 
             
@@ -46,11 +46,11 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print("Check out request received: ")
         print(request)
         # add the check out details in client_info.txt
-        with open("client_info.txt", "a+") as file_object:
+        with open(f"server_file/{request.id}_{request.name}_info.txt", "a+") as file_object:
             lines = file_object.readlines()
             file_object.seek(0)
             file_object.write("\n")
-            file_object.write(f"{request.id}  {request.name}  {request.location}  {request.check_out_time}  Check Out")
+            file_object.write(f"{request.location}  {request.check_out_time}  Check Out")
                     
         reply_message = 'Check out ' + request.location + ' successful'  
            
