@@ -26,7 +26,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print("Check in request received: ")
         print(request)
         # store the client check in details in the {request.id}_{request.name}_info text file 
-        with open(f"server_file/{request.id}_{request.name}_info.txt", "a+") as file_object:
+        with open(f"server_file/{request.id}_{request.name}_history.txt", "a+") as file_object:
             # Move read cursor to the start of file.
             file_object.seek(0)
             # If file is not empty then append '\n'
@@ -34,7 +34,49 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             if len(data) > 0 :
                 file_object.write("\n")
             # Append text at the end of file
-            file_object.write(f"{request.location}  {request.check_in_time} ")
+            file_object.write(f"{request.location}  {request.check_in_time}  Check In")
+            
+        # store the client all locations in the {request.id}_{request.name}_all text file    
+        with open(f"server_file/{request.id}_{request.name}_all.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{request.location}")
+        
+        # store the client current locations in the {request.id}_{request.name}_current text file    
+        with open(f"server_file/{request.id}_{request.name}_current.txt", "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+            # Append text at the end of file
+            file_object.write(f"{request.location}")
+            
+        # store the client current locations in the {request.id}_{request.name}_current text file    
+        with open("server_file/location_info.txt", "r+") as file_object:
+            lines = file_object.readlines()
+        with open("server_file/location_info.txt", "a+") as file_object:
+            if lines is []: 
+                # Move read cursor to the start of file.
+                file_object.seek(0)
+                # If file is not empty then append '\n'
+                data = file_object.read(100)
+                if len(data) > 0 :
+                    file_object.write("\n")
+                # Append text at the end of file
+                file_object.write(f"{request.location}: {request.id}")
+            else: 
+                for line in lines: 
+                    if f"{request.location}" not in line: 
+                        file_object.writelines(line)
+                    else:
+                        line += f"{request.id}"
         
         reply_message = 'Check In ' + request.location + ' successful' 
             
@@ -73,7 +115,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     # MOH update location 
     def updateLocation(self, request, context):
-        
+        # TO-DO implement update location function here 
         return SafeEntry_pb2.MOHReply(res='Updates have been received.')
     
     # send sms notification to the clients who has visited covid places

@@ -26,6 +26,7 @@ class SafeEntryClient(object):
         # get user name and user id 
         self.user_name = name
         self.user_id = id
+        self.temp = random_location[:]
         
     def run(self):
         user_choice = str(input("\n\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
@@ -58,7 +59,8 @@ class SafeEntryClient(object):
     # individual check in function
     def checkIn(self):
         # user check in location (use random location to simulate)
-        user_location = random.choice(random_location)
+        user_location = random.choice(self.temp)
+        self.temp.remove(user_location)
         # append the location in all_location and current_location array 
         # self.all_location.append(user_location)
         # self.current_location.append(user_location)
@@ -73,19 +75,9 @@ class SafeEntryClient(object):
             if len(data) > 0 :
                 file_object.write("\n")
             # Append text at the end of file
-            file_object.write(f"{user_location}  {current_time}  Check In")
+            file_object.write(f"{user_location}: {current_time}  Check In")
         # store the client current locations in the {request.id}_{request.name}_current text file    
         with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "a+") as file_object:
-            # Move read cursor to the start of file.
-            file_object.seek(0)
-            # If file is not empty then append '\n'
-            data = file_object.read(100)
-            if len(data) > 0 :
-                file_object.write("\n")
-            # Append text at the end of file
-            file_object.write(f"{user_location}")
-        # store the client all locations in the {request.id}_{request.name}_all text file    
-        with open(f"client_file/{self.user_id}_{self.user_name}_all.txt", "a+") as file_object:
             # Move read cursor to the start of file.
             file_object.seek(0)
             # If file is not empty then append '\n'
@@ -109,17 +101,12 @@ class SafeEntryClient(object):
             lines = file_object.readlines()
             for line in lines:
                 current_check_in_location.append(line)
-        # with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "r+") as file_object:
-        #     lines = file_object.readlines()
-        #     for line in lines:
-        #         if "Check Out" not in line:
-        #             current_check_in_location.append(line.split("  ",1)[0])
-        # 
+                
         with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "a") as file_object1:
             check_out_location = random.choice(current_check_in_location)
             file_object1.seek(0)
             # file_object1.write("\n")
-            file_object1.write(f"\n{check_out_location}  {current_time}  Check Out")
+            file_object1.write(f"\n{check_out_location}: {current_time}  Check Out")
             
         with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "r") as file_object2:
             lines = file_object2.readlines()
@@ -154,7 +141,7 @@ class SafeEntryClient(object):
         
     # function to return all the location that visited by the client 
     def getAllLocation(self):
-        location_request = SafeEntry_pb2.GroupCheckInRequest(name=user_name)
+        location_request = SafeEntry_pb2.GroupCheckInRequest(name=user_name, id=user_id)
         response = self.stub.getLocation(location_request)
         
         for reply in response:
@@ -179,6 +166,6 @@ if __name__ == "__main__":
     user_decision=''
     while user_decision != "e" and user_decision != "E": 
         client.run()
-        user_decision = str(input("Press E to exit the program or other other button to continue.\n"))
+        user_decision = str(input("Press E to exit the program or other button to continue.\n"))
         
     

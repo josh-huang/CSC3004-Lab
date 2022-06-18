@@ -9,6 +9,7 @@ service SafeEntry {
   rpc groupcheckIn (stream CheckOutRequest) returns (CheckOutReply) {}
   rpc groupcheckOut (stream CheckOutRequest) returns (CheckOutReply) {}
   rpc getLocation (LocationRequest) returns (stream LocationReply) {}
+  rpc updateLocation (MOHRequest) returns (MOHReply) {}
 }
 
 // The request message containing the user's name, NRIC, location, and check in check out time 
@@ -78,6 +79,7 @@ message MOHReply {
 // The request message containing the location names provided by MOH  
 message LocationRequest {
   string user_name = 1;
+  string user_id = 2;
 }
 
 // The response message containing the reply message sent to MOH 

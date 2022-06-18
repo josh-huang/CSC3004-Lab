@@ -40,6 +40,11 @@ class SafeEntryStub(object):
                 request_serializer=SafeEntry__pb2.LocationRequest.SerializeToString,
                 response_deserializer=SafeEntry__pb2.LocationReply.FromString,
                 )
+        self.updateLocation = channel.unary_unary(
+                '/SafeEntry.SafeEntry/updateLocation',
+                request_serializer=SafeEntry__pb2.MOHRequest.SerializeToString,
+                response_deserializer=SafeEntry__pb2.MOHReply.FromString,
+                )
 
 
 class SafeEntryServicer(object):
@@ -76,6 +81,12 @@ class SafeEntryServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def updateLocation(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SafeEntryServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -103,6 +114,11 @@ def add_SafeEntryServicer_to_server(servicer, server):
                     servicer.getLocation,
                     request_deserializer=SafeEntry__pb2.LocationRequest.FromString,
                     response_serializer=SafeEntry__pb2.LocationReply.SerializeToString,
+            ),
+            'updateLocation': grpc.unary_unary_rpc_method_handler(
+                    servicer.updateLocation,
+                    request_deserializer=SafeEntry__pb2.MOHRequest.FromString,
+                    response_serializer=SafeEntry__pb2.MOHReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -197,5 +213,22 @@ class SafeEntry(object):
         return grpc.experimental.unary_stream(request, target, '/SafeEntry.SafeEntry/getLocation',
             SafeEntry__pb2.LocationRequest.SerializeToString,
             SafeEntry__pb2.LocationReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def updateLocation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/SafeEntry.SafeEntry/updateLocation',
+            SafeEntry__pb2.MOHRequest.SerializeToString,
+            SafeEntry__pb2.MOHReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -18,3 +18,4 @@ for row in rows:
     if location is not None: 
         random_location.append(location.text)
 
+# print(random_location)
