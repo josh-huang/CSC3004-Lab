@@ -16,6 +16,12 @@ from datetime import datetime
 
 import random
 
+import csv
+
+from csv import DictWriter
+
+import pandas as pd
+
 
 class SafeEntryClient(object):
     def __init__(self, name, id):
@@ -27,6 +33,10 @@ class SafeEntryClient(object):
         self.user_name = name
         self.user_id = id
         self.temp = random_location[:]
+        with open(f'client_file/{self.user_name}.csv', mode='w') as csv_file:
+            self.fieldnames = ['Client_id', 'Client_name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
+            writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+            writer.writeheader()
         
     def run(self):
         user_choice = str(input("\n\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
@@ -61,33 +71,14 @@ class SafeEntryClient(object):
         # user check in location (use random location to simulate)
         user_location = random.choice(self.temp)
         self.temp.remove(user_location)
-        # append the location in all_location and current_location array 
-        # self.all_location.append(user_location)
-        # self.current_location.append(user_location)
         # get current time 
         current_time = self.getCurrentTime()
-        # store the client check in and check out details in the {request.id}_{request.name}_history text file 
-        with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "a+") as file_object:
-            # Move read cursor to the start of file.
-            file_object.seek(0)
-            # If file is not empty then append '\n'
-            data = file_object.read(100)
-            if len(data) > 0 :
-                file_object.write("\n")
-            # Append text at the end of file
-            file_object.write(f"{user_location}: {current_time}  Check In")
-        # store the client current locations in the {request.id}_{request.name}_current text file    
-        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "a+") as file_object:
-            # Move read cursor to the start of file.
-            file_object.seek(0)
-            # If file is not empty then append '\n'
-            data = file_object.read(100)
-            if len(data) > 0 :
-                file_object.write("\n")
-            # Append text at the end of file
-            file_object.write(f"{user_location}")
+        # store the client check in and check out details in the {request.name} csv file 
+        with open(f'client_file/{self.user_name}.csv', mode='a', newline='') as csv_file:
+            writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
+            writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}', 'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
-        response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
+        response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=self.user_name, id=self.user_id, location=user_location, check_in_time=current_time))
         print("Response Received: ")
         print(str(response.res))
         
@@ -97,25 +88,19 @@ class SafeEntryClient(object):
         current_time = self.getCurrentTime()
         current_check_in_location = []
         # select one of the current location to perform check out function 
-        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "r+") as file_object:
-            lines = file_object.readlines()
-            for line in lines:
-                current_check_in_location.append(line)
-                
-        with open(f"client_file/{self.user_id}_{self.user_name}_history.txt", "a") as file_object1:
-            check_out_location = random.choice(current_check_in_location)
-            file_object1.seek(0)
-            # file_object1.write("\n")
-            file_object1.write(f"\n{check_out_location}: {current_time}  Check Out")
-            
-        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "r") as file_object2:
-            lines = file_object2.readlines()
+        df = pd.read_csv(f'client_file/{self.user_name}.csv')
+        for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+            current_check_in_location.append(row['Location'])
+        check_out_location = random.choice(current_check_in_location)
         
-        with open(f"client_file/{self.user_id}_{self.user_name}_current.txt", "w") as file_object3:
-            for line in lines:
-                if str(check_out_location) not in line:
-                    file_object3.writelines(line)
-                    
+        for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+            if row['Location'] == check_out_location:
+                df.loc[index, 'Check Out Time'] = current_time
+                df.loc[index, 'Current Check In status'] = 1
+        # drop dataframe Unname column 
+        df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+        df.to_csv(f'client_file/{self.user_name}.csv')
+        
         # get response from server 
         response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=user_name, id=user_id, location=check_out_location, check_out_time=current_time))
         print("Response Received: ")
@@ -124,9 +109,7 @@ class SafeEntryClient(object):
     # group check out function 
     def groupCheckIn(self):
         user_location = random.choice(random_location)
-        # append the location in all_location and current_location array 
-        self.all_location.append(user_location)
-        self.current_location.append(user_location)
+
         # get current time 
         current_time = self.getCurrentTime()
         
@@ -150,7 +133,7 @@ class SafeEntryClient(object):
     # get current time function
     def getCurrentTime(self):
         now = datetime.now()
-            # get current time  
+        # get current time  
         current_time = now.strftime("%H:%M:%S")
         return current_time
 
