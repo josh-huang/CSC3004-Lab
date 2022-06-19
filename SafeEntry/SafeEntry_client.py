@@ -91,7 +91,7 @@ class SafeEntryClient(object):
                 df.loc[index, 'Current Check In status'] = 1
         # drop dataframe Unname column 
         df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-        df.to_csv(f'client_file/{self.user_name}.csv')
+        df.to_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         
         # get response from server 
         response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
