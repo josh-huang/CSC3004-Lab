@@ -20,6 +20,8 @@ import pandas as pd
 
 import os.path
 
+import time
+
 
 class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
@@ -124,7 +126,13 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         df = pd.read_csv(f'server_file/client_info.csv')
         for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
             user_all_location.append(row['Location'])
-    
+        
+        for i in user_all_location:
+            locationReply = SafeEntry_pb2.LocationReply()
+            locationReply.location_name = i
+            yield locationReply
+            time.sleep(2)
+             
     # get current time function
     def getCurrentTime(self):
         now = datetime.now()

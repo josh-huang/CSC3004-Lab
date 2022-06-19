@@ -124,11 +124,11 @@ class SafeEntryClient(object):
         
     # function to return all the location that visited by the client 
     def getAllLocation(self):
-        location_request = SafeEntry_pb2.GroupCheckInRequest(name=user_name, id=user_id)
+        location_request = SafeEntry_pb2.GroupCheckInRequest(name=self.user_name, id=self.user_id)
         response = self.stub.getLocation(location_request)
         
         for reply in response:
-            print(reply + '\n')
+            print(reply)
             
     # get current time function
     def getCurrentTime(self):
