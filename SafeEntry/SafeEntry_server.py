@@ -28,7 +28,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     def __init__(self):
         # initate 
         self.fieldnames = ['Unname', 'Client ID', 'Client Name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
-        self.fieldnames2 = ['Unname', 'Location', 'Checked In Client ID', 'Check In Time', 'Check Out Time', 'Current Location Status', 'Covid Affected Date and Time']
+        self.fieldnames2 = ['Unname', 'Location', 'Checked In Client ID', 'Check In Time', 'Check Out Time', 'Current Location Covid Status', 'Covid Affected Date and Time']
     # individual check in function 
     def checkIn(self, request, context):
         # print out the request message
@@ -109,6 +109,18 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     # MOH update location 
     def updateLocation(self, request, context):
         # TO-DO implement update location function here 
+        print("Update location status request received: ")
+        print(request)
+        
+        df_location = pd.read_csv(f'server_file/location_info.csv')
+        for index, row in df_location.iterrows():
+            if row['Location'] == request.location:
+                df_location.loc[index, 'Current Location Covid Status'] = 1
+                df_location.loc[index, 'Covid Affected Date and Time'] = request.visit_date
+        # drop dataframe Unname column 
+        df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+        df_location.to_csv(f'server_file/location_info.csv')
+        
         return SafeEntry_pb2.MOHReply(res='Update information have been received.')
     
     # send sms notification to the clients who has visited covid places
