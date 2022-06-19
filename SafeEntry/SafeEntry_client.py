@@ -1,26 +1,18 @@
 from __future__ import print_function
 from http.client import ResponseNotReady
-
 import logging
 from tabnanny import check
-
 import grpc
-
 import SafeEntry_pb2
-
 import SafeEntry_pb2_grpc
-
 from location_scrap import random_location
-
 from datetime import datetime
-
 import random
-
 import csv
-
 from csv import DictWriter
-
 import pandas as pd
+import time 
+import os.path
 
 
 class SafeEntryClient(object):
@@ -33,7 +25,7 @@ class SafeEntryClient(object):
         self.user_name = name
         self.user_id = id
         self.temp = random_location[:]
-        with open(f'client_file/{self.user_name}.csv', mode='w') as csv_file:
+        with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='w+') as csv_file:
             self.fieldnames = ['Client_id', 'Client_name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
             writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             writer.writeheader()
@@ -74,7 +66,7 @@ class SafeEntryClient(object):
         # get current time 
         current_time = self.getCurrentTime()
         # store the client check in and check out details in the {request.name} csv file 
-        with open(f'client_file/{self.user_name}.csv', mode='a', newline='') as csv_file:
+        with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='a', newline='') as csv_file:
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
             writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}', 'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
@@ -88,7 +80,7 @@ class SafeEntryClient(object):
         current_time = self.getCurrentTime()
         current_check_in_location = []
         # select one of the current location to perform check out function 
-        df = pd.read_csv(f'client_file/{self.user_name}.csv')
+        df = pd.read_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             current_check_in_location.append(row['Location'])
         check_out_location = random.choice(current_check_in_location)
@@ -102,47 +94,91 @@ class SafeEntryClient(object):
         df.to_csv(f'client_file/{self.user_name}.csv')
         
         # get response from server 
-        response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=user_name, id=user_id, location=check_out_location, check_out_time=current_time))
+        response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
         print("Response Received: ")
         print(str(response.res))
         
     # group check out function 
     def groupCheckIn(self):
-        user_location = random.choice(random_location)
-
-        # get current time 
-        current_time = self.getCurrentTime()
-        
         # get response from server 
-        response = self.stub.checkIn(SafeEntry_pb2.GroupCheckInRequest(name=user_name, id=user_id, location=user_location, check_in_time=current_time))
+        response = self.stub.groupCheckIn(self.get_input_from_user_checkin())
         print("Response Received: ")
         print(str(response.res))
     
     # group check out function 
     def groupCheckOut(self):
-        pass
+        response = self.stub.groupCheckOut(self.get_input_from_user_checkout())
+        print("Response Received: ")
+        print(str(response.res))
         
     # function to return all the location that visited by the client 
     def getAllLocation(self):
-        location_request = SafeEntry_pb2.GroupCheckInRequest(name=self.user_name, id=self.user_id)
+        location_request = SafeEntry_pb2.LocationRequest(user_name=self.user_name, user_id=self.user_id)
         response = self.stub.getLocation(location_request)
         
         for reply in response:
-            print(reply)
-            
+            print(reply) 
+
     # get current time function
     def getCurrentTime(self):
         now = datetime.now()
         # get current time  
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         return current_time
-
+    
+    def get_input_from_user_checkin(self):
+        # user check in location (use random location to simulate)
+        user_location = random.choice(self.temp)
+        self.temp.remove(user_location)
+        # get current time 
+        current_time = self.getCurrentTime()
+        name = ''
+        while name != "q":
+            name, id = input('Enter your family member name and id that you wish to check in or type \'q 1\' to exit: \n').split()
+            if name != 'q' and id != '1':
+                file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
+                with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
+                    if not file_exists: 
+                        writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+                        writer.writeheader()
+                    writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
+                    writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Check In Time': f'{current_time}', 'Current Check In status': 0})
+                groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time)
+                yield groupCheckInRequest
+                time.sleep(1)
+            
+    def get_input_from_user_checkout(self):
+        # get current time 
+        current_time = self.getCurrentTime()
+        current_check_in_location = []
+        name = ''
+        while name != "q":
+            name, id = input('Enter your family member name and id that you wish to check out or type \'q 1\' to exit: \n').split()
+            if name != 'q' and id != '1':
+                df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+                    current_check_in_location.append(row['Location'])
+                print('Please select the location that you want to check out: ')
+                for i in current_check_in_location:
+                    print(i)
+                check_out_location = input("")
+                df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+                    if row['Location'] == check_out_location:
+                        df.loc[index, 'Check Out Time'] = current_time
+                        df.loc[index, 'Current Check In status'] = 1
+                # drop dataframe Unname column 
+                df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+                df.to_csv(f'client_file/{id}_{name}.csv')
+                groupCheckOutRequest = SafeEntry_pb2.GroupCheckOutRequest(name=name, id=id, location=check_out_location, check_out_time=current_time)
+                yield groupCheckOutRequest
+                time.sleep(1)
 
 if __name__ == "__main__":
     logging.basicConfig()
     # get user creditienal 
     user_name = str(input('Enter your name: '))
-    user_id = int(input('Enter your id: '))
+    user_id = str(input('Enter your id: '))
     # initial user client object
     client = SafeEntryClient(user_name, user_id)
     # main loop

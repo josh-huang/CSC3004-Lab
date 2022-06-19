@@ -1,25 +1,14 @@
 from concurrent import futures
-
 import logging
-
 import grpc
-
 import SafeEntry_pb2
-
 import SafeEntry_pb2_grpc
-
 from location_scrap import random_location
-
 from datetime import datetime
-
 import csv
-
 from csv import DictWriter
-
 import pandas as pd
-
 import os.path
-
 import time
 
 
@@ -57,7 +46,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 writer.writeheader()
                 
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
-            writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Status': 0})
+            writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Covid Status': 0})
         
         # reply message to be sent to client 
         reply_message = 'Check In ' + request.location + ' successful' 
@@ -93,18 +82,67 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             
     
     # group check in function 
-    def groupCheckIn(self, request, context):
-        if request.name not in client_info:
-            client_info.append([request.name, request.id, request.location])
+    def groupCheckIn(self, request_iterator, context):
+        
+        for request in request_iterator:
+            # print out the request message
+            print("Check out request received: ")
+            print(request)
+            check_in_location = request.location
+            # Check if files exists in the folder
+            file_exists_client = os.path.isfile(f'server_file/client_info.csv')
+            file_exists_location = os.path.isfile(f'server_file/location_info.csv')
             
-        return SafeEntry_pb2.Reply(res='Group Check In ' + request.location + ' successful')
+            # append client check in infomation in the client_info.csv
+            with open(f'server_file/client_info.csv', mode='a', newline='') as csv_file:
+                
+                if not file_exists_client: 
+                    writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+                    writer.writeheader()
+                    
+                writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
+                writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
+            
+            # append location check in infomation in the client_info.csv
+            with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
+                
+                if not file_exists_location: 
+                    writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames2)
+                    writer.writeheader()
+                    
+                writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
+                writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Covid Status': 0})
+        # reply message to be sent to client 
+        reply_message = 'Group Check In ' + check_in_location + ' successful' 
+        return SafeEntry_pb2.GroupCheckInReply(res=reply_message)
     
     # group check out function 
-    def groupCheckOut(self, request, context):
-        if request.name not in client_info:
-            client_info.append([request.name, request.id, request.location])
+    def groupCheckOut(self, request_iterator, context):
+        for request in request_iterator:
+            # print out the request message
+            print("Check out request received: ")
+            print(request)
             
-        return SafeEntry_pb2.Reply(res='Group Check Out ' + request.location + ' successful')
+            df = pd.read_csv(f'server_file/client_info.csv')
+            for index, row in df.iterrows():
+                if row['Location'] == request.location and row['Client ID'] == request.id:
+                    df.loc[index, 'Check Out Time'] = request.check_out_time
+                    df.loc[index, 'Current Check In status'] = 1
+            # drop dataframe Unname column 
+            df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+            df.to_csv(f'server_file/client_info.csv')
+                
+            df_location = pd.read_csv(f'server_file/location_info.csv')
+            for index, row in df_location.iterrows():
+                if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
+                    df_location.loc[index, 'Check Out Time'] = request.check_out_time
+            # drop dataframe Unname column 
+            df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+            df_location.to_csv(f'server_file/location_info.csv')
+        
+        # reply message to be sent to client 
+        reply_message = 'Group Check Out successful' 
+        return SafeEntry_pb2.GroupCheckOutReply(res=reply_message)
     
     # MOH update location 
     def updateLocation(self, request, context):
@@ -150,7 +188,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     def getCurrentTime(self):
         now = datetime.now()
             # get current time  
-        current_time = now.strftime("%H:%M:%S")
+        current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         return current_time
 
 def serve():

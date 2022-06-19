@@ -6,8 +6,8 @@ package SafeEntry;
 service SafeEntry {
   rpc checkIn (CheckInRequest) returns (CheckInReply) {}
   rpc checkOut (CheckOutRequest) returns (CheckOutReply) {}
-  rpc groupcheckIn (stream CheckOutRequest) returns (CheckOutReply) {}
-  rpc groupcheckOut (stream CheckOutRequest) returns (CheckOutReply) {}
+  rpc groupCheckIn (stream GroupCheckInRequest) returns (GroupCheckInReply) {}
+  rpc groupCheckOut (stream GroupCheckOutRequest) returns (GroupCheckOutReply) {}
   rpc getLocation (LocationRequest) returns (stream LocationReply) {}
   rpc updateLocation (MOHRequest) returns (MOHReply) {}
 }
@@ -15,7 +15,7 @@ service SafeEntry {
 // The request message containing the user's name, NRIC, location, and check in check out time 
 message CheckInRequest {
   string name = 1;
-  int32 id = 2;
+  string id = 2;
   string location = 3;
   string check_in_time = 4;
 }
@@ -28,7 +28,7 @@ message CheckInReply {
 // The request message containing the user's name, NRIC, location, and check out time 
 message CheckOutRequest {
   string name = 1;
-  int32 id = 2;
+  string id = 2;
   string location = 3;
   string check_out_time = 4;
 }
@@ -41,7 +41,7 @@ message CheckOutReply {
 // The request message containing the user's name, NRIC, location, and check in check out time 
 message GroupCheckInRequest {
   string name = 1;
-  int32 id = 2;
+  string id = 2;
   string location = 3;
   string check_in_time = 4;
 }
@@ -49,12 +49,13 @@ message GroupCheckInRequest {
 // The response message containing the greetings
 message GroupCheckInReply {
   string res = 1;
+  repeated GroupCheckInRequest request = 2;
 }
 
 // The request message containing the user's name, NRIC, location, and check in check out time 
 message GroupCheckOutRequest {
   string name = 1;
-  int32 id = 2;
+  string id = 2;
   string location = 3;
   string check_out_time = 4;
 }
@@ -62,6 +63,7 @@ message GroupCheckOutRequest {
 // The response message containing the check out reply message 
 message GroupCheckOutReply {
   string res = 1;
+  repeated GroupCheckOutRequest request = 2;
 }
 
 // The request message containing the location names provided by MOH  
