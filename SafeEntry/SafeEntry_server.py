@@ -112,6 +112,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print("Update location status request received: ")
         print(request)
         
+        # update location covid status to 1 and added affected date 
         df_location = pd.read_csv(f'server_file/location_info.csv')
         for index, row in df_location.iterrows():
             if row['Location'] == request.location:

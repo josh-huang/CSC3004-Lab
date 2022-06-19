@@ -134,7 +134,7 @@ class SafeEntryClient(object):
     def getCurrentTime(self):
         now = datetime.now()
         # get current time  
-        current_time = now.strftime("%H:%M:%S")
+        current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         return current_time
 
 
