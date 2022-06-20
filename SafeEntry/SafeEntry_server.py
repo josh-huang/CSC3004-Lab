@@ -10,6 +10,7 @@ from csv import DictWriter
 import pandas as pd
 import os.path
 import time
+import numpy as np
 
 # two files to be created: client_info.csv and location_file.csv
 # [client_info.csv]: 'Client ID': client ID, 'Client Name': client name, 'Location': checked in lcoation name, 
@@ -175,18 +176,29 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # update location covid status to 1 and added affected date 
         df_location = pd.read_csv(f'server_file/location_info.csv')
         for index, row in df_location.iterrows():
-            if row['Location'] == request.location:
+            if row['Location'] == request.location_name:
                 df_location.loc[index, 'Current Location Covid Status'] = 1
-                df_location.loc[index, 'Covid Affected Date and Time'] = request.visit_date
+                df_location.loc[index, 'Covid Affected Check-In Date and Time'] = request.visit_date
+                df_location.loc[index, 'Covid Affected Check-Out Date and Time'] = request.checkOut_date
+               
         # drop dataframe Unname column 
         df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
         df_location.to_csv(f'server_file/location_info.csv')
         
-        return SafeEntry_pb2.MOHReply(res='Update information have been received.')
+        #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
+        return SafeEntry_pb2.MOHReply(res='Updates have been received for : ' + request.location_name  + 
+        ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date)
     
     # send sms notification to the clients who has visited covid places
     def getNotification(self, request, context):
         pass
+        #read client_info file
+        df_client = pd.read_csv(f'server_file/client_info.csv')
+        df_location = pd.read_csv(f'server_file/location_info.csv')
+
+        #read location_info file
+
+
     
     # get all the location that visited by the client
     def getLocation(self, request, context):

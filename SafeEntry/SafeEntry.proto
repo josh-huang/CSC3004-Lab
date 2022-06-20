@@ -70,6 +70,7 @@ message GroupCheckOutReply {
 message MOHRequest {
   string location_name = 1;
   string visit_date = 2;
+  string checkOut_date = 3;
 }
 
 // The response message containing the reply message from server

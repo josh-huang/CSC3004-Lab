@@ -1,0 +1,65 @@
+Tanglin  21:11:57  Check In
+Kampong Bugis  21:12:03  Check In
+Port  21:12:07  Check In
+Geylang  21:12:13  Check In
+Rochor Canal  21:12:15  Check In
+one-north  21:12:18  Check In
+Telok Blangah  21:12:19  Check In
+Tiong Bahru  21:12:20  Check In
+Marine Parade  21:12:22  Check In
+Tiong Bahru  21:12:23  Check In
+Fort Canning  21:12:27  Check In
+Boon Keng  21:12:28  Check In
+Fort Canning  21:12:31  Check In
+Telok Blangah  21:12:35  Check In
+National University of Singapore  21:12:37  Check In
+Robertson Quay  21:12:38  Check In
+Kallang  21:12:41  Check In
+Mountbatten  21:13:27  Check In
+Depot Road  21:13:30  Check In
+Holland Drive  21:13:32  Check In
+National University of Singapore  21:13:32  Check In
+Telok Blangah  21:13:33  Check In
+Katong  21:13:34  Check In
+Geylang  21:13:35  Check In
+Clifford Pier  21:13:54  Check In
+Tiong Bahru  21:14:15  Check In
+Kallang
+  21:15:17  Check Out
+Tiong Bahru
+  21:15:53  Check Out
+Kampong Bugis
+  21:15:57  Check Out
+Port
+  21:15:59  Check Out
+Tiong Bahru  21:16:01  Check Out
+Depot Road
+  21:16:09  Check Out
+Telok Blangah
+  21:16:14  Check Out
+National University of Singapore
+  21:16:16  Check Out
+Tanglin
+  21:16:18  Check Out
+Robertson Quay
+  21:16:21  Check Out
+Fort Canning
+  21:16:43  Check Out
+Katong
+  21:16:45  Check Out
+Rochor Canal
+  21:16:50  Check Out
+one-north
+  21:16:51  Check Out
+Geylang
+  21:16:53  Check Out
+Mountbatten
+  21:16:54  Check Out
+Boon Keng
+  21:16:55  Check Out
+Clifford Pier
+  21:16:56  Check Out
+Holland Drive
+  21:16:57  Check Out
+Marine Parade
+  21:16:57  Check Out
