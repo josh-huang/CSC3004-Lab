@@ -173,8 +173,9 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print("Update location status request received: ")
         print(request)
         
+        affected_user = []
         # update location covid status to 1 and added affected date 
-        df_location = pd.read_csv(f'server_file/location_info.csv')
+        df_location = pd.read_csv(f'server_file/location_info.csv')   
         for index, row in df_location.iterrows():
             if row['Location'] == request.location_name:
                 df_location.loc[index, 'Current Location Covid Status'] = 1
@@ -184,6 +185,19 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # drop dataframe Unname column 
         df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
         df_location.to_csv(f'server_file/location_info.csv')
+        
+        with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
+            writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
+            writer_object.writerow({'Location': f'{request.location_name}', 'Current Location Covid Status': 1, 'Covid Affected Check-In Date and Time': f'{request.visit_date}', 'Covid Affected Check-Out Date and Time': f'{request.checkOut_date}'})
+        
+        # drop duplicate rows 
+        df_location = pd.read_csv(f'server_file/location_info.csv')  
+        pd.drop_duplicates(inplace=True)
+        pd.to_csv(f'server_file/location_info.csv')
+        
+        df = pd.read_csv(f'server_file/client_info.csv')
+        for index, row in df.loc[df['Location'] == request.location_name].iterrows():
+            affected_user.append(row['Client ID'])
         
         #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
         return SafeEntry_pb2.MOHReply(res='Updates have been received for : ' + request.location_name  + 
@@ -209,7 +223,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # read csv file and append all the location in the user_all_location array 
         df = pd.read_csv(f'server_file/client_info.csv')
         for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
-            if row['Client ID'] == request.user_id:
+            if str(row['Client ID']) == request.user_id:
                 user_all_location.append(row['Location'])
         
         for i in user_all_location:

@@ -28,8 +28,6 @@ class SafeEntryMOH(object):
         self.checkOut_date = checkOut_date
 
 
-        
-
     def run(self):
         self.updateLocation() #covid_location,covid_date,covid_time
 
