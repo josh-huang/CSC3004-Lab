@@ -30,10 +30,7 @@ class SafeEntryClient(object):
         # get copy of the lcoation array
         self.temp = random_location[:]
         # initiate the client info file and write header to it 
-        with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='w+') as csv_file:
-            self.fieldnames = ['Client_id', 'Client_name', 'Client_phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
-            writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
-            writer.writeheader()
+        self.fieldnames = ['Client_id', 'Client_name', 'Client_phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
         
     # main loop    
     def run(self):
@@ -70,8 +67,12 @@ class SafeEntryClient(object):
             user_location = groupCheckLocation
         # get current time 
         current_time = self.getCurrentTime()
+        file_exists_client = os.path.isfile(f'client_file/{self.user_id}_{self.user_name}.csv')
         # store the client check in and check out details in the {request.name} csv file 
         with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='a', newline='') as csv_file:
+            if not file_exists_client: 
+                writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+                writer.writeheader()
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
             writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}','Client_phone': f'{self.user_phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
@@ -86,6 +87,7 @@ class SafeEntryClient(object):
         # current check in location array 
         current_check_in_location = []
         # check the client file and append check in status = 0 location into the array 
+        
         df = pd.read_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             current_check_in_location.append(row['Location'])
@@ -93,7 +95,7 @@ class SafeEntryClient(object):
         print('Type the location that you wish to check out: ')
         for i in current_check_in_location: 
             print (i)
-        check_out_location = input('')
+        check_out_location = str(input(''))
         # add check out time and change the current check in status to 1
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             if row['Location'] == check_out_location:

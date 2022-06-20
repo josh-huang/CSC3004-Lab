@@ -74,7 +74,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             # add the check out details in client_info.txt
             df = pd.read_csv(f'server_file/client_info.csv')
             for index, row in df.iterrows():
-                if row['Location'] == request.location and row['Client ID'] == request.id:
+                if row['Location'] == request.location and str(row['Client ID']) == request.id:
                     df.loc[index, 'Check Out Time'] = request.check_out_time
                     df.loc[index, 'Current Check In status'] = 1
             # drop dataframe Unname column 
@@ -199,7 +199,6 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         #read location_info file
 
 
-    
     # get all the location that visited by the client
     def getLocation(self, request, context):
         # print out the get location request message
@@ -210,7 +209,8 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         # read csv file and append all the location in the user_all_location array 
         df = pd.read_csv(f'server_file/client_info.csv')
         for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
-            user_all_location.append(row['Location'])
+            if row['Client ID'] == request.user_id:
+                user_all_location.append(row['Location'])
         
         for i in user_all_location:
             locationReply = SafeEntry_pb2.LocationReply()
