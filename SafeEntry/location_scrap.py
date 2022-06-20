@@ -12,6 +12,7 @@ table = soup.find("table",{"class":"wikitable sortable"})
 table_body = table.find('tbody')
 rows = table_body.find_all('tr')
 
+# append random location in random_location array
 for row in rows:
     # print(row)
     location = row.find('a')

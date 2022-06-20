@@ -23,7 +23,6 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         self.fieldnames = ['Unname', 'Client ID', 'Client Name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
         self.fieldnames2 = ['Unname', 'Location', 'Checked In Client ID', 'Check In Time', 'Check Out Time', 'Current Location Covid Status', 'Covid Affected Date and Time']
         
-        
     # individual check in function 
     def checkIn(self, request, context):
         # print out the request message
@@ -180,7 +179,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print(request)
         
         user_all_location = []
-        
+        # read csv file and append all the location in the user_all_location array 
         df = pd.read_csv(f'server_file/client_info.csv')
         for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
             user_all_location.append(row['Location'])
