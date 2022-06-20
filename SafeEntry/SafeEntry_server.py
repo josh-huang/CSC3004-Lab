@@ -11,40 +11,46 @@ import pandas as pd
 import os.path
 import time
 
+# two files to be created: client_info.csv and location_file.csv
+# [client_info.csv]: 'Client ID': client ID, 'Client Name': client name, 'Location': checked in lcoation name, 
+# 'Check In Time': checked in time, 'Check Out Time: blank if no check out from client', 'Current Check in Status': 0 indicates only 
+# [location_info.csv]: 'Location': location name
 
 class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     def __init__(self):
-        # initate 
+        # initate the field name for both csv file 
         self.fieldnames = ['Unname', 'Client ID', 'Client Name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
         self.fieldnames2 = ['Unname', 'Location', 'Checked In Client ID', 'Check In Time', 'Check Out Time', 'Current Location Covid Status', 'Covid Affected Date and Time']
+        
+        
     # individual check in function 
     def checkIn(self, request, context):
         # print out the request message
         print("Check in request received: ")
         print(request)
         
-        # Check if files exists in the folder
+        # Check if files exists
         file_exists_client = os.path.isfile(f'server_file/client_info.csv')
         file_exists_location = os.path.isfile(f'server_file/location_info.csv')
         
         # append client check in infomation in the client_info.csv
         with open(f'server_file/client_info.csv', mode='a', newline='') as csv_file:
-            
+            # if file not exists, write header 
             if not file_exists_client: 
                 writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
                 writer.writeheader()
-                
+            # write the client info into client_info file     
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
             writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
         
         # append location check in infomation in the client_info.csv
         with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
-            
+            # if file not exists, write header
             if not file_exists_location: 
                 writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames2)
                 writer.writeheader()
-                
+            # write the client info into location_info file   
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
             writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Covid Status': 0})
         
@@ -52,6 +58,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         reply_message = 'Check In ' + request.location + ' successful' 
             
         return SafeEntry_pb2.CheckInReply(res=reply_message)
+    
     
     # individual check out function 
     def checkOut(self, request, context):

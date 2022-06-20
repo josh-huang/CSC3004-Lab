@@ -14,8 +14,10 @@ import pandas as pd
 import time 
 import os.path
 
+# client info will be stored in seperate file 
 
 class SafeEntryClient(object):
+    
     def __init__(self, name, id):
         # create a gRPC channel to connect to server
         self.channel = grpc.insecure_channel("localhost:50051")
@@ -24,35 +26,32 @@ class SafeEntryClient(object):
         # get user name and user id 
         self.user_name = name
         self.user_id = id
+        # get copy of the lcoation array
         self.temp = random_location[:]
         with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='w+') as csv_file:
             self.fieldnames = ['Client_id', 'Client_name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
             writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             writer.writeheader()
         
+        
     def run(self):
-        user_choice = str(input("\n\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))
-            
+        user_choice = str(input("\n\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n"))  
         # user choose Check in function 
         if user_choice == "1":
             # call local check in function
-            self.checkIn()
-       
+            self.checkIn()       
         # user choose Check out function 
         elif user_choice == "2":
             # user check out location in the current location array 
-            self.checkOut()
-        
+            self.checkOut()       
         # user choose Group check in function 
         elif user_choice == "3":
             # group check in function 
-            self.groupCheckIn()
-        
+            self.groupCheckIn()      
         # user choose Group check out function 
         elif user_choice == "4":
             # group check out function 
-            self.groupCheckOut()
-        
+            self.groupCheckOut()      
         # user choose display location history function 
         elif user_choice == "5":
             # display location function  
@@ -86,7 +85,11 @@ class SafeEntryClient(object):
         df = pd.read_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             current_check_in_location.append(row['Location'])
-        check_out_location = random.choice(current_check_in_location)
+        # user select the location that they wish to check out 
+        print('Type the location that you wish to check out: ')
+        for i in current_check_in_location: 
+            print (i)
+        check_out_location = input('')
         
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             if row['Location'] == check_out_location:
