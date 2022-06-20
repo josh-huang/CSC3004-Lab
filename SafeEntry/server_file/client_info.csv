@@ -1,2 +1,5 @@
-Unname,Client ID,Client Name,Location,Check In Time,Check Out Time,Current Check In status
-,11313,Jiashu,Ghim Moh,20/06/2022 13:01:04,,0
+,Client ID,Client Name,Client Phone,Location,Check In Time,Check Out Time,Current Check In status
+0,2002179,jiayi,97156459,Pasir Panjang,20/06/2022 22:55:42,,0
+1,2002179,jiayi,97156459,Tanglin,20/06/2022 22:55:44,,0
+2,2002179,jiayi,97156459,Telok Blangah,20/06/2022 22:55:45,,0
+3,2002179,jiayi,97156459,Maritime Square,20/06/2022 22:55:47,,0

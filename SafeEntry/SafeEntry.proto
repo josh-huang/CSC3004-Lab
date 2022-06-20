@@ -18,6 +18,7 @@ message CheckInRequest {
   string id = 2;
   string location = 3;
   string check_in_time = 4;
+  string phone_number = 5;
 }
 
 // The response message containing the check in message reply from server
@@ -44,6 +45,7 @@ message GroupCheckInRequest {
   string id = 2;
   string location = 3;
   string check_in_time = 4;
+  string phone_number = 5;
 }
 
 // The response message containing the group check in message reply from server

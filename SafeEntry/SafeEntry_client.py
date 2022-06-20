@@ -18,7 +18,7 @@ import os.path
 
 class SafeEntryClient(object):
     
-    def __init__(self, name, id):
+    def __init__(self, name, id, user_phone):
         # create a gRPC channel to connect to server
         self.channel = grpc.insecure_channel("localhost:50051")
         # indicate the stub that connect to the server 
@@ -26,11 +26,12 @@ class SafeEntryClient(object):
         # get user name and user id 
         self.user_name = name
         self.user_id = id
+        self.user_phone = user_phone
         # get copy of the lcoation array
         self.temp = random_location[:]
         # initiate the client info file and write header to it 
         with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='w+') as csv_file:
-            self.fieldnames = ['Client_id', 'Client_name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
+            self.fieldnames = ['Client_id', 'Client_name', 'Client_phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
             writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             writer.writeheader()
         
@@ -72,9 +73,9 @@ class SafeEntryClient(object):
         # store the client check in and check out details in the {request.name} csv file 
         with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='a', newline='') as csv_file:
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
-            writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}', 'Check In Time': f'{current_time}', 'Current Check In status': 0})
+            writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}','Client_phone': f'{self.user_phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
-        response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=self.user_name, id=self.user_id, location=user_location, check_in_time=current_time))
+        response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=self.user_name, id=self.user_id, location=user_location, check_in_time=current_time, phone_number = self.user_phone))
         print("Response Received: ")
         print(str(response.res))
         
@@ -147,8 +148,8 @@ class SafeEntryClient(object):
         self.checkIn(groupCheckLocation=user_location)
         # loop to get the name and id for each group memeber
         while name != "q":
-            name, id = input('Enter your family member name (enter _ if space) and id that you wish to check in or type \'q 1\' to exit: \n').split()
-            if name != 'q' and id != '1':
+            name, id, phone = input('Enter your family member name (enter _ if space), id and phone that you wish to check in or type \'q 1 1\' to exit: \n').split()
+            if name != 'q' and id != '1' and phone != '1':
                 file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
                 with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
                     if not file_exists: 
@@ -156,8 +157,8 @@ class SafeEntryClient(object):
                         writer.writeheader()
                     writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
                     # append the check in info to the client file 
-                    writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Check In Time': f'{current_time}', 'Current Check In status': 0})
-                groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time)
+                    writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Client_phone': f'{phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
+                groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
                 yield groupCheckInRequest
                 time.sleep(1)
             
@@ -194,8 +195,9 @@ if __name__ == "__main__":
     # get user name and id 
     user_name = str(input('Enter your name: '))
     user_id = str(input('Enter your id: '))
+    user_phone = str(input('Enter your phone number: '))
     # initiate user client object
-    client = SafeEntryClient(user_name, user_id)
+    client = SafeEntryClient(user_name, user_id, user_phone)
     # main loop
     user_decision=''
     while user_decision != "e" and user_decision != "E": 

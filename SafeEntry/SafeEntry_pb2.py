@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"S\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"X\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\"Q\n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\x12/\n\x07request\x18\x02 \x03(\x0b\x32\x1e.SafeEntry.GroupCheckInRequest\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"S\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\x12\x30\n\x07request\x18\x02 \x03(\x0b\x32\x1f.SafeEntry.GroupCheckOutRequest\"N\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\x12\x12\n\nvisit_date\x18\x02 \x01(\t\x12\x15\n\rcheckOut_date\x18\x03 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"5\n\x0fLocationRequest\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\"&\n\rLocationReply\x12\x15\n\rlocation_name\x18\x01 \x01(\t2\xc0\x03\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12P\n\x0cgroupCheckIn\x12\x1e.SafeEntry.GroupCheckInRequest\x1a\x1c.SafeEntry.GroupCheckInReply\"\x00(\x01\x12S\n\rgroupCheckOut\x12\x1f.SafeEntry.GroupCheckOutRequest\x1a\x1d.SafeEntry.GroupCheckOutReply\"\x00(\x01\x12G\n\x0bgetLocation\x12\x1a.SafeEntry.LocationRequest\x1a\x18.SafeEntry.LocationReply\"\x00\x30\x01\x12>\n\x0eupdateLocation\x12\x15.SafeEntry.MOHRequest\x1a\x13.SafeEntry.MOHReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fSafeEntry.proto\x12\tSafeEntry\"i\n\x0e\x43heckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\x12\x14\n\x0cphone_number\x18\x05 \x01(\t\"\x1b\n\x0c\x43heckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"U\n\x0f\x43heckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"\x1c\n\rCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"n\n\x13GroupCheckInRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x15\n\rcheck_in_time\x18\x04 \x01(\t\x12\x14\n\x0cphone_number\x18\x05 \x01(\t\"Q\n\x11GroupCheckInReply\x12\x0b\n\x03res\x18\x01 \x01(\t\x12/\n\x07request\x18\x02 \x03(\x0b\x32\x1e.SafeEntry.GroupCheckInRequest\"Z\n\x14GroupCheckOutRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08location\x18\x03 \x01(\t\x12\x16\n\x0e\x63heck_out_time\x18\x04 \x01(\t\"S\n\x12GroupCheckOutReply\x12\x0b\n\x03res\x18\x01 \x01(\t\x12\x30\n\x07request\x18\x02 \x03(\x0b\x32\x1f.SafeEntry.GroupCheckOutRequest\"N\n\nMOHRequest\x12\x15\n\rlocation_name\x18\x01 \x01(\t\x12\x12\n\nvisit_date\x18\x02 \x01(\t\x12\x15\n\rcheckOut_date\x18\x03 \x01(\t\"\x17\n\x08MOHReply\x12\x0b\n\x03res\x18\x01 \x01(\t\"5\n\x0fLocationRequest\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\"&\n\rLocationReply\x12\x15\n\rlocation_name\x18\x01 \x01(\t2\xc0\x03\n\tSafeEntry\x12?\n\x07\x63heckIn\x12\x19.SafeEntry.CheckInRequest\x1a\x17.SafeEntry.CheckInReply\"\x00\x12\x42\n\x08\x63heckOut\x12\x1a.SafeEntry.CheckOutRequest\x1a\x18.SafeEntry.CheckOutReply\"\x00\x12P\n\x0cgroupCheckIn\x12\x1e.SafeEntry.GroupCheckInRequest\x1a\x1c.SafeEntry.GroupCheckInReply\"\x00(\x01\x12S\n\rgroupCheckOut\x12\x1f.SafeEntry.GroupCheckOutRequest\x1a\x1d.SafeEntry.GroupCheckOutReply\"\x00(\x01\x12G\n\x0bgetLocation\x12\x1a.SafeEntry.LocationRequest\x1a\x18.SafeEntry.LocationReply\"\x00\x30\x01\x12>\n\x0eupdateLocation\x12\x15.SafeEntry.MOHRequest\x1a\x13.SafeEntry.MOHReply\"\x00\x62\x06proto3')
 
 
 
@@ -119,29 +119,29 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _CHECKINREQUEST._serialized_start=30
-  _CHECKINREQUEST._serialized_end=113
-  _CHECKINREPLY._serialized_start=115
-  _CHECKINREPLY._serialized_end=142
-  _CHECKOUTREQUEST._serialized_start=144
-  _CHECKOUTREQUEST._serialized_end=229
-  _CHECKOUTREPLY._serialized_start=231
-  _CHECKOUTREPLY._serialized_end=259
-  _GROUPCHECKINREQUEST._serialized_start=261
-  _GROUPCHECKINREQUEST._serialized_end=349
-  _GROUPCHECKINREPLY._serialized_start=351
-  _GROUPCHECKINREPLY._serialized_end=432
-  _GROUPCHECKOUTREQUEST._serialized_start=434
-  _GROUPCHECKOUTREQUEST._serialized_end=524
-  _GROUPCHECKOUTREPLY._serialized_start=526
-  _GROUPCHECKOUTREPLY._serialized_end=609
-  _MOHREQUEST._serialized_start=611
-  _MOHREQUEST._serialized_end=689
-  _MOHREPLY._serialized_start=691
-  _MOHREPLY._serialized_end=714
-  _LOCATIONREQUEST._serialized_start=716
-  _LOCATIONREQUEST._serialized_end=769
-  _LOCATIONREPLY._serialized_start=771
-  _LOCATIONREPLY._serialized_end=809
-  _SAFEENTRY._serialized_start=812
-  _SAFEENTRY._serialized_end=1260
+  _CHECKINREQUEST._serialized_end=135
+  _CHECKINREPLY._serialized_start=137
+  _CHECKINREPLY._serialized_end=164
+  _CHECKOUTREQUEST._serialized_start=166
+  _CHECKOUTREQUEST._serialized_end=251
+  _CHECKOUTREPLY._serialized_start=253
+  _CHECKOUTREPLY._serialized_end=281
+  _GROUPCHECKINREQUEST._serialized_start=283
+  _GROUPCHECKINREQUEST._serialized_end=393
+  _GROUPCHECKINREPLY._serialized_start=395
+  _GROUPCHECKINREPLY._serialized_end=476
+  _GROUPCHECKOUTREQUEST._serialized_start=478
+  _GROUPCHECKOUTREQUEST._serialized_end=568
+  _GROUPCHECKOUTREPLY._serialized_start=570
+  _GROUPCHECKOUTREPLY._serialized_end=653
+  _MOHREQUEST._serialized_start=655
+  _MOHREQUEST._serialized_end=733
+  _MOHREPLY._serialized_start=735
+  _MOHREPLY._serialized_end=758
+  _LOCATIONREQUEST._serialized_start=760
+  _LOCATIONREQUEST._serialized_end=813
+  _LOCATIONREPLY._serialized_start=815
+  _LOCATIONREPLY._serialized_end=853
+  _SAFEENTRY._serialized_start=856
+  _SAFEENTRY._serialized_end=1304
 # @@protoc_insertion_point(module_scope)

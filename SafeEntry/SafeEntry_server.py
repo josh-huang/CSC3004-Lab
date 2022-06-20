@@ -21,8 +21,8 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     def __init__(self):
         # initate the field name for both csv file 
-        self.fieldnames = ['Unname', 'Client ID', 'Client Name', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
-        self.fieldnames2 = ['Unname', 'Location', 'Checked In Client ID', 'Check In Time', 'Check Out Time', 'Current Location Covid Status', 'Covid Affected Date and Time']
+        self.fieldnames = ['Unname', 'Client ID', 'Client Name','Client Phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
+        self.fieldnames2 = ['Unname', 'Location', 'Current Location Covid Status', 'Covid Affected Check-In Date and Time','Covid Affected Check-Out Date and Time']
         
     # individual check in function 
     def checkIn(self, request, context):
@@ -43,7 +43,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                     writer.writeheader()
                 # write the client info into client_info file     
                 writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
-                writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
+                writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Client Phone': f'{request.phone_number}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
             
             # append location check in infomation in the client_info.csv
             with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
@@ -53,7 +53,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                     writer.writeheader()
                 # write the client info into location_info file   
                 writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
-                writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Covid Status': 0})
+                writer_object.writerow({'Location': f'{request.location}', 'Current Location Covid Status': 0})
             
             # reply message to be sent to client 
             reply_message = 'Check In ' + request.location + ' successful' 
@@ -79,15 +79,15 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                     df.loc[index, 'Current Check In status'] = 1
             # drop dataframe Unname column 
             df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-            df.to_csv(f'server_file/client_info.csv')
+            df.to_csv(f'server_file/client_info.csv') #not updatnig
                     
-            df_location = pd.read_csv(f'server_file/location_info.csv')
-            for index, row in df_location.iterrows():
-                if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
-                    df_location.loc[index, 'Check Out Time'] = request.check_out_time
-            # drop dataframe Unname column 
-            df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-            df_location.to_csv(f'server_file/location_info.csv')
+            # df_location = pd.read_csv(f'server_file/location_info.csv')
+            # for index, row in df_location.iterrows():
+            #     if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
+            #         df_location.loc[index, 'Check Out Time'] = request.check_out_time
+            # # drop dataframe Unname column 
+            # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+            # df_location.to_csv(f'server_file/location_info.csv')
                                 
             reply_message = 'Check out ' + request.location + ' successful'
             
@@ -117,7 +117,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                         writer.writeheader()
                         
                     writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
-                    writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
+                    writer_object.writerow({'Client ID': f'{request.id}', 'Location': f'{request.location}','Client Name': f'{request.name}', 'Client Phone': f'{request.phone_number}', 'Check In Time': f'{request.check_in_time}', 'Current Check In status': 0})
                 
                 # append location check in infomation in the client_info.csv
                 with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
@@ -127,7 +127,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                         writer.writeheader()
                         
                     writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
-                    writer_object.writerow({'Checked In Client ID': f'{request.id}', 'Location': f'{request.location}', 'Check In Time': f'{request.check_in_time}', 'Current Location Covid Status': 0})
+                    writer_object.writerow({'Location': f'{request.location}', 'Current Location Covid Status': 0})
             # reply message to be sent to client 
             reply_message = 'Group Check In ' + check_in_location + ' successful' 
         except: 
@@ -152,13 +152,13 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
                 df.to_csv(f'server_file/client_info.csv')
                     
-                df_location = pd.read_csv(f'server_file/location_info.csv')
-                for index, row in df_location.iterrows():
-                    if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
-                        df_location.loc[index, 'Check Out Time'] = request.check_out_time
-                # drop dataframe Unname column 
-                df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-                df_location.to_csv(f'server_file/location_info.csv')
+                # df_location = pd.read_csv(f'server_file/location_info.csv')
+                # for index, row in df_location.iterrows():
+                #     if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
+                #         df_location.loc[index, 'Check Out Time'] = request.check_out_time
+                # # drop dataframe Unname column 
+                # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+                # df_location.to_csv(f'server_file/location_info.csv')
             
             # reply message to be sent to client 
             reply_message = 'Group Check Out successful' 

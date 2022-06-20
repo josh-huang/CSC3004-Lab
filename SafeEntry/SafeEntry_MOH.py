@@ -1,14 +1,18 @@
 from __future__ import print_function
-
+from http.client import ResponseNotReady
 import logging
-
+from tabnanny import check
 import grpc
-
 import SafeEntry_pb2
-
 import SafeEntry_pb2_grpc
-
 from location_scrap import random_location
+from datetime import datetime
+import random
+import csv
+from csv import DictWriter
+import pandas as pd
+import time 
+import os.path
 
 #TO-DO implement remote access MOH client here 
 class SafeEntryMOH(object):
@@ -22,6 +26,9 @@ class SafeEntryMOH(object):
         self.location_name = location_name
         self.visit_date = visit_date
         self.checkOut_date = checkOut_date
+
+
+        
 
     def run(self):
         self.updateLocation() #covid_location,covid_date,covid_time
@@ -39,9 +46,14 @@ class SafeEntryMOH(object):
 if __name__ == "__main__":
     logging.basicConfig()
 
-    location_name = str(input("\nDeclare the location visted by a COVID-19 case: \n"))
-    visit_date = str(input("Declare the check-in date and time visted by a COVID-19 case (The Format should be: DD/M/YYYY H:MM AM/PM): \n")) 
-    checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (The Format should be: DD/M/YYYY H:MM AM/PM): \n"))
+    # get copy of the lcoation array
+    temp = random_location[:]
+    location_name = random.choice(temp)
+    temp.remove(location_name)
+    
+    print("\nLocation: " + location_name)
+    visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM AM/PM):\n")) 
+    checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM AM/PM):\n"))
     #and time (combine date and time tgt)
 
     # initial user client object
