@@ -59,10 +59,13 @@ class SafeEntryClient(object):
             self.getAllLocation()
     
     # individual check in function
-    def checkIn(self):
+    def checkIn(self, groupCheckLocation = None):
         # user check in location (use random location to simulate)
-        user_location = random.choice(self.temp)
-        self.temp.remove(user_location)
+        if groupCheckLocation is None:
+            user_location = random.choice(self.temp)
+            self.temp.remove(user_location)
+        else:
+            user_location = groupCheckLocation
         # get current time 
         current_time = self.getCurrentTime()
         # store the client check in and check out details in the {request.name} csv file 
@@ -133,8 +136,9 @@ class SafeEntryClient(object):
         # get current time 
         current_time = self.getCurrentTime()
         name = ''
+        self.checkIn(groupCheckLocation=user_location)
         while name != "q":
-            name, id = input('Enter your family member name and id that you wish to check in or type \'q 1\' to exit: \n').split()
+            name, id = input('Enter your family member name (enter _ if space) and id that you wish to check in or type \'q 1\' to exit: \n').split()
             if name != 'q' and id != '1':
                 file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
                 with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
@@ -150,15 +154,15 @@ class SafeEntryClient(object):
     def get_input_from_user_checkout(self):
         # get current time 
         current_time = self.getCurrentTime()
-        current_check_in_location = []
         name = ''
         while name != "q":
-            name, id = input('Enter your family member name and id that you wish to check out or type \'q 1\' to exit: \n').split()
+            current_check_in_location = []
+            name, id = input('Enter your family member name (enter _ if space) and id that you wish to check out or type \'q 1\' to exit: \n').split()
             if name != 'q' and id != '1':
                 df = pd.read_csv(f'client_file/{id}_{name}.csv')
                 for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
                     current_check_in_location.append(row['Location'])
-                print('Please select the location that you want to check out: ')
+                print('Please type the location that you want to check out: ')
                 for i in current_check_in_location:
                     print(i)
                 check_out_location = input("")
