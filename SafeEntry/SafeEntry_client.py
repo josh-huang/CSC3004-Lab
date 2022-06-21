@@ -195,38 +195,43 @@ class SafeEntryClient(object):
                 time.sleep(1)
 
 
-    def validation(name,phone):
-        if user_name.isalpha():
-            if int(user_phone):
-                isValid = True
-            else:
-                isValid = False
-                print("Phone must contains numbers only. Please try again\n")
-        else:
-            isValid = False
-            print("Name must contains alphabets only. Please try again\n")
+    # def validation(name,phone):
+    #     if user_name.isalpha():
+    #         if int(user_phone):
+    #             isValid = True
+    #         else:
+    #             isValid = False
+    #             print("Phone must contains numbers only. Please try again\n")
+    #     else:
+    #         isValid = False
+    #         print("Name must contains alphabets only. Please try again\n")
         
-        return isValid
+    #     return isValid
 
                 
 
 if __name__ == "__main__":
     logging.basicConfig()
     # get user name and id 
-    user_name = str(input('Enter your name: '))
-    user_id = str(input('Enter your id: '))
-    user_phone = str(input('Enter your phone number: '))
+    while True: 
+        user_name = str(input('Enter your name: '))
+        user_id = str(input('Enter your id: '))
+        user_phone = str(input('Enter your phone number: '))
+        if not user_name.isalpha():
+            print("Name must contains alphabets only. Please try again\n")
+        elif not user_phone.isnumeric():
+            print("Phone must contains numbers only. Please try again\n")
+        else:
+            break
     # initiate user client object
     client = SafeEntryClient(user_name, user_id, user_phone)
 
-    valid = SafeEntryClient.validation(user_name, user_phone)
-
+    # valid = SafeEntryClient.validation(user_name, user_phone)
     # main loop
     user_decision=''
-    while valid != False:
-        while user_decision != "e" and user_decision != "E": 
-            client.run()
-            user_decision = str(input("Press E to exit the program or other button to continue.\n"))
+    while user_decision != "e" and user_decision != "E": 
+        client.run()
+        user_decision = str(input("Press E to exit the program or other button to continue.\n"))
     
 
     

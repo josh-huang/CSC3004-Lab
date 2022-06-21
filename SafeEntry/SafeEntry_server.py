@@ -12,6 +12,7 @@ import pandas as pd
 import os.path
 import time
 import numpy as np
+import pywhatkit
 
 # two files to be created: client_info.csv and location_file.csv
 # [client_info.csv]: 'Client ID': client ID, 'Client Name': client name, 'Location': checked in lcoation name, 
@@ -164,7 +165,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
 
     # MOH update location 
     def updateLocation(self, request, context):
-        try:
+        # try:
             #update location function here 
             print("Update location status request received: ")
             print(request)
@@ -193,8 +194,9 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             
             # drop duplicate rows 
             df_location = pd.read_csv(f'server_file/location_info.csv')  
-            pd.drop_duplicates(inplace=True)
-            pd.to_csv(f'server_file/location_info.csv')
+            df_location.drop_duplicates(inplace=True)
+            df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+            df_location.to_csv(f'server_file/location_info.csv')
             
             df = pd.read_csv(f'server_file/client_info.csv')
             for index, row in df.loc[df['Location'] == request.location_name].iterrows():
@@ -204,45 +206,35 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 affected_user_check_in.append(row['Check In Time'])
                 affected_user_check_out.append(row['Check Out Time'])
             
+            if len(affected_user_phone) != 0:
+                for i in range(len(affected_user_phone)):
+                    now = datetime.now()
+                    current_date = now.strftime("%d/%m/%Y") 
+                    now += timedelta(days=14) 
+                    future_date = now.strftime("%d/%m/%Y")
+                    
+                    current_time = now.strftime("%H:%M:%S") 
+                    now += timedelta(seconds=60) 
+                    future_time = now.strftime("%H:%M:%S")
+                    future_hour = future_time.split(':')[0].lstrip('0')
+                    future_minutes = future_time.split(':')[1].lstrip('0')
+                    
+                    messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
+                    + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
+                    
+                    pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
             
-            for i in range(len(affected_user_phone)):
-                now = datetime.now()
-                current_date = now.strftime("%d/%m/%Y") 
-                now += timedelta(days=14) 
-                future_date = now.strftime("%d/%m/%Y")
-                
-                current_time = now.strftime("%H:%M:%S") 
-                now += timedelta(seconds=60) 
-                future_time = now.strftime("%H:%M:%S")
-                future_hour = future_time.split(':')[0].lstrip('0')
-                future_minutes = future_time.split(':')[1].lstrip('0')
-                
-                messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
-                + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
-                
-                pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
-        
             reply_message = 'Updates have been received for : ' + request.location_name  + ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date
             #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
             return SafeEntry_pb2.MOHReply(res=reply_message)
 
-        except:
-            # reply message to be sent to client 
-            reply_message = 'Update failed, Please try again.' 
-            return SafeEntry_pb2.MOHReply(res=reply_message)
+        # except:
+        #     # reply message to be sent to client 
+        #     reply_message = 'Update failed, Please try again.' 
+        #     return SafeEntry_pb2.MOHReply(res=reply_message)
         #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
            
 
-            
-    
-    # send sms notification to the clients who has visited covid places
-    def getNotification(self, request, context):
-        pass
-        #read client_info file
-        df_client = pd.read_csv(f'server_file/client_info.csv')
-        df_location = pd.read_csv(f'server_file/location_info.csv')
-
-        #read location_info file
 
 
     # get all the location that visited by the client

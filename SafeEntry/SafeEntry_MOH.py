@@ -37,28 +37,27 @@ class SafeEntryMOH(object):
         print("Location: " + self.location_name)
 
         #endless loop
-        visit_Date_valid = SafeEntryMOH.validate(self.visit_date)
-        checkout_Date_valid = SafeEntryMOH.validate(self.checkOut_date)
-        while (visit_Date_valid == True and checkout_Date_valid == True):
-            # get response from server 
-            response = self.stub.updateLocation(SafeEntry_pb2.MOHRequest(
-                location_name = self.location_name, visit_date = self.visit_date, checkOut_date = self.checkOut_date))
-            print("Response Received: ")
-            print(str(response.res))
-        else:
-            print("Inputs dates are not valid, please input the valid date and time.")
+        # visit_Date_valid = self.validate(self.visit_date)
+        # checkout_Date_valid = self.validate(self.checkOut_date)
+        # while (visit_Date_valid == True and checkout_Date_valid == True):
+        #     # get response from server 
+        response = self.stub.updateLocation(SafeEntry_pb2.MOHRequest(
+            location_name = self.location_name, visit_date = self.visit_date, checkOut_date = self.checkOut_date))
+        print("Response Received: ")
+        print(str(response.res))
+        # else:
+        #     print("Inputs dates are not valid, please input the valid date and time.")
 
-    def validate(date_text):
-        # initializing format
-        format = "%d/%m/%Y"
-        # checking if format matches the date
-        res = True
-        try:
-            dt_object1 = datetime.strptime(date_text, "%d/%m/%Y %H:%M")
-            return res
-        except ValueError:
-            print("Inputs dates are not valid, please input the valid date and time")
-            return False
+# def validate(date_text):
+#     # initializing format
+#     format = "%d/%m/%Y %H:%M"
+#     # checking if format matches the date
+#     try:
+#         datetime.strptime(date_text, format)
+#         return True
+#     except ValueError:
+#         print("Inputs dates are not valid, please input the valid date and time")
+#         return False
 
     
 if __name__ == "__main__":
@@ -69,9 +68,19 @@ if __name__ == "__main__":
     location_name = random.choice(temp)
     temp.remove(location_name)
     
+    format = "%d/%m/%Y %H:%M"
+    
     print("\nLocation: " + location_name)
-    visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n")) 
-    checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n"))
+    while True:
+        visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n")) 
+        checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n"))
+        try:
+            datetime.strptime(visit_date, format)
+            datetime.strptime(checkOut_date, format)
+            break
+        except:
+            print("\nInputs dates are not valid, please input the valid date and time")
+        
     #and time (combine date and time tgt)
     client = SafeEntryMOH(location_name,visit_date,checkOut_date)
     # main loop
