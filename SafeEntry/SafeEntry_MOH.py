@@ -13,6 +13,8 @@ from csv import DictWriter
 import pandas as pd
 import time 
 import os.path
+from dateutil import parser
+
 
 #TO-DO implement remote access MOH client here 
 class SafeEntryMOH(object):
@@ -34,11 +36,29 @@ class SafeEntryMOH(object):
     def updateLocation(self): #,covid_location,covid_date,covid_time
         print("Location: " + self.location_name)
 
-        # get response from server 
-        response = self.stub.updateLocation(SafeEntry_pb2.MOHRequest(
-            location_name = self.location_name, visit_date = self.visit_date, checkOut_date = self.checkOut_date))
-        print("Response Received: ")
-        print(str(response.res))
+        #endless loop
+        visit_Date_valid = SafeEntryMOH.validate(self.visit_date)
+        checkout_Date_valid = SafeEntryMOH.validate(self.checkOut_date)
+        while (visit_Date_valid == True and checkout_Date_valid == True):
+            # get response from server 
+            response = self.stub.updateLocation(SafeEntry_pb2.MOHRequest(
+                location_name = self.location_name, visit_date = self.visit_date, checkOut_date = self.checkOut_date))
+            print("Response Received: ")
+            print(str(response.res))
+        else:
+            print("Inputs dates are not valid, please input the valid date and time.")
+
+    def validate(date_text):
+        # initializing format
+        format = "%d/%m/%Y"
+        # checking if format matches the date
+        res = True
+        try:
+            dt_object1 = datetime.strptime(date_text, "%d/%m/%Y %H:%M")
+            return res
+        except ValueError:
+            print("Inputs dates are not valid, please input the valid date and time")
+            return False
 
     
 if __name__ == "__main__":
@@ -50,15 +70,36 @@ if __name__ == "__main__":
     temp.remove(location_name)
     
     print("\nLocation: " + location_name)
-    visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM AM/PM):\n")) 
-    checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM AM/PM):\n"))
+    visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n")) 
+    checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n"))
     #and time (combine date and time tgt)
-
-    # initial user client object
     client = SafeEntryMOH(location_name,visit_date,checkOut_date)
-
     # main loop
     user_decision=''
     while user_decision != "e" and user_decision != "E": 
         client.run()
         user_decision = str(input("Press E to exit the program or other other button to continue.\n"))
+    # # main loop
+    # user_decision=''
+    # while user_decision != "e" and user_decision != "E": 
+    #         # initial user client object
+    #     try:
+    #         visit_Date_valid = SafeEntryMOH.validate(visit_date)
+    #         checkout_Date_valid = SafeEntryMOH.validate(checkOut_date)
+    #         if (visit_Date_valid == True and checkout_Date_valid == True):
+    #             #client = SafeEntryMOH(location_name,visit_date,checkOut_date)
+    #             client.run()
+    #             user_decision = str(input("Press E to exit the program or other other button to continue.\n"))
+    #             print("Declaration passed!")
+    #             break
+    #         #else:
+    #             #cause ENDLESS LOOP
+    #             #print("Inputs dates are not valid, please input the valid date and time")
+    #             #if visit_date == True and checkout_Date_valid == True:
+    #             #client = SafeEntryMOH(location_name,visit_date,checkOut_date)
+    #             # initial user client object
+    #     except:
+    #         print("Declaration failed, please try again")
+    #         continue
+        
+    

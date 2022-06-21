@@ -12,7 +12,6 @@ import pandas as pd
 import os.path
 import time
 import numpy as np
-import pywhatkit
 
 # two files to be created: client_info.csv and location_file.csv
 # [client_info.csv]: 'Client ID': client ID, 'Client Name': client name, 'Location': checked in lcoation name, 
@@ -161,68 +160,80 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             reply_message = 'Group Check Out failed' 
         return SafeEntry_pb2.GroupCheckOutReply(res=reply_message)
     
+
+
     # MOH update location 
     def updateLocation(self, request, context):
-        # TO-DO implement update location function here 
-        print("Update location status request received: ")
-        print(request)
-        
-        affected_user_phone = []
-        affected_user_name = []
-        affected_user_id = []
-        affected_user_check_in = []
-        affected_user_check_out = []
-        
-        # update location covid status to 1 and added affected date 
-        df_location = pd.read_csv(f'server_file/location_info.csv')   
-        for index, row in df_location.iterrows():
-            if row['Location'] == request.location_name:
-                df_location.loc[index, 'Current Location Covid Status'] = 1
-                df_location.loc[index, 'Covid Affected Check-In Date and Time'] = request.visit_date
-                df_location.loc[index, 'Covid Affected Check-Out Date and Time'] = request.checkOut_date
-               
-        # drop dataframe Unname column 
-        df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-        df_location.to_csv(f'server_file/location_info.csv')
-        
-        with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
-            writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
-            writer_object.writerow({'Location': f'{request.location_name}', 'Current Location Covid Status': 1, 'Covid Affected Check-In Date and Time': f'{request.visit_date}', 'Covid Affected Check-Out Date and Time': f'{request.checkOut_date}'})
-        
-        # drop duplicate rows 
-        df_location = pd.read_csv(f'server_file/location_info.csv')  
-        pd.drop_duplicates(inplace=True)
-        pd.to_csv(f'server_file/location_info.csv')
-        
-        df = pd.read_csv(f'server_file/client_info.csv')
-        for index, row in df.loc[df['Location'] == request.location_name].iterrows():
-            affected_user_phone.append(row['Client Phone'])
-            affected_user_name.append(row['Client Name'])
-            affected_user_id.append(row['Client ID'])
-            affected_user_check_in.append(row['Check In Time'])
-            affected_user_check_out.append(row['Check Out Time'])
-        
-        
-        for i in range(len(affected_user_phone)):
-            now = datetime.now()
-            current_date = now.strftime("%d/%m/%Y") 
-            now += timedelta(days=14) 
-            future_date = now.strftime("%d/%m/%Y")
+        try:
+            #update location function here 
+            print("Update location status request received: ")
+            print(request)
             
-            current_time = now.strftime("%H:%M:%S") 
-            now += timedelta(seconds=60) 
-            future_time = now.strftime("%H:%M:%S")
-            future_hour = future_time.split(':')[0].lstrip('0')
-            future_minutes = future_time.split(':')[1].lstrip('0')
+            affected_user_phone = []
+            affected_user_name = []
+            affected_user_id = []
+            affected_user_check_in = []
+            affected_user_check_out = []
             
-            messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
-            + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
+            # update location covid status to 1 and added affected date 
+            df_location = pd.read_csv(f'server_file/location_info.csv')   
+            for index, row in df_location.iterrows():
+                if row['Location'] == request.location_name:
+                    df_location.loc[index, 'Current Location Covid Status'] = 1
+                    df_location.loc[index, 'Covid Affected Check-In Date and Time'] = request.visit_date
+                    df_location.loc[index, 'Covid Affected Check-Out Date and Time'] = request.checkOut_date
+                
+            # drop dataframe Unname column 
+            df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
+            df_location.to_csv(f'server_file/location_info.csv')
             
-            pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
+            with open(f'server_file/location_info.csv', mode='a', newline='') as csv_file:
+                writer_object = DictWriter(csv_file, fieldnames=self.fieldnames2)
+                writer_object.writerow({'Location': f'{request.location_name}', 'Current Location Covid Status': 1, 'Covid Affected Check-In Date and Time': f'{request.visit_date}', 'Covid Affected Check-Out Date and Time': f'{request.checkOut_date}'})
+            
+            # drop duplicate rows 
+            df_location = pd.read_csv(f'server_file/location_info.csv')  
+            pd.drop_duplicates(inplace=True)
+            pd.to_csv(f'server_file/location_info.csv')
+            
+            df = pd.read_csv(f'server_file/client_info.csv')
+            for index, row in df.loc[df['Location'] == request.location_name].iterrows():
+                affected_user_phone.append(row['Client Phone'])
+                affected_user_name.append(row['Client Name'])
+                affected_user_id.append(row['Client ID'])
+                affected_user_check_in.append(row['Check In Time'])
+                affected_user_check_out.append(row['Check Out Time'])
+            
+            
+            for i in range(len(affected_user_phone)):
+                now = datetime.now()
+                current_date = now.strftime("%d/%m/%Y") 
+                now += timedelta(days=14) 
+                future_date = now.strftime("%d/%m/%Y")
+                
+                current_time = now.strftime("%H:%M:%S") 
+                now += timedelta(seconds=60) 
+                future_time = now.strftime("%H:%M:%S")
+                future_hour = future_time.split(':')[0].lstrip('0')
+                future_minutes = future_time.split(':')[1].lstrip('0')
+                
+                messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
+                + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
+                
+                pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
         
+            reply_message = 'Updates have been received for : ' + request.location_name  + ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date
+            #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
+            return SafeEntry_pb2.MOHReply(res=reply_message)
+
+        except:
+            # reply message to be sent to client 
+            reply_message = 'Update failed, Please try again.' 
+            return SafeEntry_pb2.MOHReply(res=reply_message)
         #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
-        return SafeEntry_pb2.MOHReply(res='Updates have been received for : ' + request.location_name  + 
-        ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date)
+           
+
+            
     
     # send sms notification to the clients who has visited covid places
     def getNotification(self, request, context):
@@ -236,22 +247,26 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
 
     # get all the location that visited by the client
     def getLocation(self, request, context):
+        try:
         # print out the get location request message
-        print("Get location request received: ")
-        print(request)
-        
-        user_all_location = []
-        # read csv file and append all the location in the user_all_location array 
-        df = pd.read_csv(f'server_file/client_info.csv')
-        for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
-            if str(row['Client ID']) == request.user_id:
-                user_all_location.append(row['Location'])
-        
-        for i in user_all_location:
-            locationReply = SafeEntry_pb2.LocationReply()
-            locationReply.location_name = i
-            yield locationReply
-            time.sleep(2)
+            print("Get location request received: ")
+            print(request)
+            
+            user_all_location = []
+            # read csv file and append all the location in the user_all_location array 
+            df = pd.read_csv(f'server_file/client_info.csv')
+            for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
+                if str(row['Client ID']) == request.user_id:
+                    user_all_location.append(row['Location'])
+            
+            for i in user_all_location:
+                locationReply = SafeEntry_pb2.LocationReply()
+                locationReply.location_name = i
+                yield locationReply
+                time.sleep(2)
+        except:
+            # print out failure message
+            print("Get location request failed, please try again")
              
     # get current time function
     def getCurrentTime(self):

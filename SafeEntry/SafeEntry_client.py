@@ -56,6 +56,8 @@ class SafeEntryClient(object):
         elif user_choice == "5":
             # display location function  
             self.getAllLocation()
+        else:
+            print('Please choose between 1 - 5 \n')
     
     # individual check in function
     def checkIn(self, groupCheckLocation = None):
@@ -192,6 +194,22 @@ class SafeEntryClient(object):
                 yield groupCheckOutRequest
                 time.sleep(1)
 
+
+    def validation(name,phone):
+        if user_name.isalpha():
+            if int(user_phone):
+                isValid = True
+            else:
+                isValid = False
+                print("Phone must contains numbers only. Please try again\n")
+        else:
+            isValid = False
+            print("Name must contains alphabets only. Please try again\n")
+        
+        return isValid
+
+                
+
 if __name__ == "__main__":
     logging.basicConfig()
     # get user name and id 
@@ -200,10 +218,27 @@ if __name__ == "__main__":
     user_phone = str(input('Enter your phone number: '))
     # initiate user client object
     client = SafeEntryClient(user_name, user_id, user_phone)
+
+    valid = SafeEntryClient.validation(user_name, user_phone)
+
     # main loop
     user_decision=''
-    while user_decision != "e" and user_decision != "E": 
-        client.run()
-        user_decision = str(input("Press E to exit the program or other button to continue.\n"))
+    while valid != False:
+        while user_decision != "e" and user_decision != "E": 
+            client.run()
+            user_decision = str(input("Press E to exit the program or other button to continue.\n"))
+    
+
+    
+
+   
+    
+        
+                
+        
+
+   
+
+  
         
     
