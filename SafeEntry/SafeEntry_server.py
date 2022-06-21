@@ -5,12 +5,14 @@ import SafeEntry_pb2
 import SafeEntry_pb2_grpc
 from location_scrap import random_location
 from datetime import datetime
+from datetime import timedelta 
 import csv
 from csv import DictWriter
 import pandas as pd
 import os.path
 import time
 import numpy as np
+import pywhatkit
 
 # two files to be created: client_info.csv and location_file.csv
 # [client_info.csv]: 'Client ID': client ID, 'Client Name': client name, 'Location': checked in lcoation name, 
@@ -152,14 +154,6 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
                 df.to_csv(f'server_file/client_info.csv')
                     
-                # df_location = pd.read_csv(f'server_file/location_info.csv')
-                # for index, row in df_location.iterrows():
-                #     if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
-                #         df_location.loc[index, 'Check Out Time'] = request.check_out_time
-                # # drop dataframe Unname column 
-                # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-                # df_location.to_csv(f'server_file/location_info.csv')
-            
             # reply message to be sent to client 
             reply_message = 'Group Check Out successful' 
         except:
@@ -173,7 +167,12 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         print("Update location status request received: ")
         print(request)
         
-        affected_user = []
+        affected_user_phone = []
+        affected_user_name = []
+        affected_user_id = []
+        affected_user_check_in = []
+        affected_user_check_out = []
+        
         # update location covid status to 1 and added affected date 
         df_location = pd.read_csv(f'server_file/location_info.csv')   
         for index, row in df_location.iterrows():
@@ -197,7 +196,29 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         
         df = pd.read_csv(f'server_file/client_info.csv')
         for index, row in df.loc[df['Location'] == request.location_name].iterrows():
-            affected_user.append(row['Client ID'])
+            affected_user_phone.append(row['Client Phone'])
+            affected_user_name.append(row['Client Name'])
+            affected_user_id.append(row['Client ID'])
+            affected_user_check_in.append(row['Check In Time'])
+            affected_user_check_out.append(row['Check Out Time'])
+        
+        
+        for i in range(len(affected_user_phone)):
+            now = datetime.now()
+            current_date = now.strftime("%d/%m/%Y") 
+            now += timedelta(days=14) 
+            future_date = now.strftime("%d/%m/%Y")
+            
+            current_time = now.strftime("%H:%M:%S") 
+            now += timedelta(seconds=60) 
+            future_time = now.strftime("%H:%M:%S")
+            future_hour = future_time.split(':')[0].lstrip('0')
+            future_minutes = future_time.split(':')[1].lstrip('0')
+            
+            messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
+            + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
+            
+            pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
         
         #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
         return SafeEntry_pb2.MOHReply(res='Updates have been received for : ' + request.location_name  + 
