@@ -209,21 +209,23 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             
             if len(affected_user_phone) != 0:
                 for i in range(len(affected_user_phone)):
+                    
                     now = datetime.now()
                     current_date = now.strftime("%d/%m/%Y") 
                     now += timedelta(days=14) 
                     future_date = now.strftime("%d/%m/%Y")
                     
                     current_time = now.strftime("%H:%M:%S") 
-                    now += timedelta(seconds=60) 
+                    now += timedelta(seconds=90) 
                     future_time = now.strftime("%H:%M:%S")
                     future_hour = future_time.split(':')[0].lstrip('0')
                     future_minutes = future_time.split(':')[1].lstrip('0')
                     
-                    messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]}' + f'\nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}'
-                    + f'\nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier.' + '\nWe wish you a quick recovery.' + '\nMinistry of Health'
+                    messgae_whatsapp = f'Dear {affected_user_name[i]} {affected_user_id[i]} \nyou are receiving this health risk notice as a close contact of a covid-19 case during {affected_user_check_in[i]} to {affected_user_check_out[i]} at {request.location_name}. \nPlease stay at your place of accomodation and monitor your health. Take an ART self-test from {current_date} to {future_date} or until you have a negative ART/PCR test result, whichever is earlier. \nWe wish you a quick recovery. \nMinistry of Health'
                     
-                    pywhatkit.sendwhatmsg(i, messgae_whatsapp, future_hour, future_minutes, wait_time=10)
+                    phone_number = str("+"+str(affected_user_phone[i]))
+                    
+                    pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, int(future_hour), int(future_minutes), wait_time=10)
             
             reply_message = 'Updates have been received for : ' + request.location_name  + ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date
             #return SafeEntry_pb2.MOHReply(res='Update information have been received.')

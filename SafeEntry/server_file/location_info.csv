@@ -1,8 +1,18 @@
-Unname,Location,Current Location Covid Status,Covid Affected Check-In Date and Time,Covid Affected Check-Out Date and Time
-,Potong Pasir,0,,
-,Port,0,,
-,Singapore Polytechnic,0,,
-,Katong,0,,
-,Marine Parade,0,,
-,River Valley,0,,
-,Everton Park,0,,
+,Location,Current Location Covid Status,Covid Affected Check-In Date and Time,Covid Affected Check-Out Date and Time
+0,Potong Pasir,1,11/09/2022 07:45,11/09/2022 10:45
+1,Port,0,,
+2,Singapore Polytechnic,0,,
+3,Katong,0,,
+4,Marine Parade,0,,
+5,River Valley,0,,
+6,Everton Park,0,,
+7,Bukit Merah,1,21/09/2020 19:40,22/09/2020 20:40
+8,Potong Pasir,1,11/09/2022 07:45,11/09/2022 10:45
+9,Sungei Road,1,21/09/2020 19:40,22/09/2020 20:40
+10,Kampong Java,1,21/09/2020 19:40,22/09/2020 20:40
+11,Henderson Hill,1,21/09/2020 19:40,22/09/2020 20:40
+12,Tanglin,1,21/09/2020 19:40,22/09/2020 20:40
+13,Pearl's Hill,1,21/09/2020 19:40,22/09/2020 20:40
+14,Rochor Canal,1,21/09/2020 19:40,22/09/2020 20:40
+15,Bukit Merah,1,21/09/2020 19:40,22/09/2020 20:40
+16,one-north,1,21/09/2020 19:40,22/09/2020 20:40
