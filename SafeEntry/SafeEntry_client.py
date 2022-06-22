@@ -94,23 +94,26 @@ class SafeEntryClient(object):
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             current_check_in_location.append(row['Location'])
         # user select the location that they wish to check out 
-        print('Type the location that you wish to check out: ')
-        for i in current_check_in_location: 
-            print (i)
-        check_out_location = str(input(''))
-        # add check out time and change the current check in status to 1
-        for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
-            if row['Location'] == check_out_location:
-                df.loc[index, 'Check Out Time'] = current_time
-                df.loc[index, 'Current Check In status'] = 1
-        # drop dataframe Unname column 
-        df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-        df.to_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
+        if len(current_check_in_location) != 0: 
+            print('Type the location that you wish to check out: ')
+            for i in current_check_in_location: 
+                print (i)
+            check_out_location = str(input(''))
+            # add check out time and change the current check in status to 1
+            for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+                if row['Location'] == check_out_location:
+                    df.loc[index, 'Check Out Time'] = current_time
+                    df.loc[index, 'Current Check In status'] = 1
+            # drop dataframe Unname column 
+            df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+            df.to_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         
-        # get response from server 
-        response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
-        print("Response Received: ")
-        print(str(response.res))
+            # get response from server 
+            response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
+            print("Response Received: ")
+            print(str(response.res))
+        else:
+            print('You have no location to check out.')
         
     # group check out function 
     def groupCheckIn(self):

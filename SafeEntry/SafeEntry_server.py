@@ -75,22 +75,23 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             print(request)
             # add the check out details in client_info.txt
             df = pd.read_csv(f'server_file/client_info.csv')
+            # df = pd.read_csv(f'server_file/client_info.csv')
             for index, row in df.iterrows():
                 if row['Location'] == request.location and str(row['Client ID']) == request.id:
                     df.loc[index, 'Check Out Time'] = request.check_out_time
                     df.loc[index, 'Current Check In status'] = 1
             # drop dataframe Unname column 
             df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-            df.to_csv(f'server_file/client_info.csv') #not updatnig
-                    
+            df.to_csv(f'server_file/client_info.csv') #not updating
+            
+                     
             # df_location = pd.read_csv(f'server_file/location_info.csv')
             # for index, row in df_location.iterrows():
             #     if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
             #         df_location.loc[index, 'Check Out Time'] = request.check_out_time
             # # drop dataframe Unname column 
             # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-            # df_location.to_csv(f'server_file/location_info.csv')
-                                
+            # df_location.to_csv(f'server_file/location_info.csv')                 
             reply_message = 'Check out ' + request.location + ' successful'
             
         except:
@@ -234,8 +235,6 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
         #     return SafeEntry_pb2.MOHReply(res=reply_message)
         #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
            
-
-
 
     # get all the location that visited by the client
     def getLocation(self, request, context):

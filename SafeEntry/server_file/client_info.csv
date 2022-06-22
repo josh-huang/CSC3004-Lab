@@ -1,2 +1,8 @@
-Unname,Client ID,Client Name,Client Phone,Location,Check In Time,Check Out Time,Current Check In status
-,12,Jiashu,12131,Potong Pasir,22/06/2022 21:44:03,,0
+,Client ID,Client Name,Client Phone,Location,Check In Time,Check Out Time,Current Check In status
+0,12,Jiashu,12131,Potong Pasir,22/06/2022 21:44:03,,0
+1,3123,yiiyuiy,123,Port,22/06/2022 22:21:53,22/06/2022 22:22:09,1
+2,3123,yiiyuiy,123,Singapore Polytechnic,22/06/2022 22:21:55,22/06/2022 22:22:15,1
+3,12312,Jiashu,12312,Katong,22/06/2022 22:26:36,22/06/2022 22:26:39,1
+4,1231,Jiashu,223211,Marine Parade,22/06/2022 22:29:01,22/06/2022 22:29:04,1
+5,12312,usadhas,122,River Valley,22/06/2022 22:38:21,22/06/2022 22:38:26,1
+6,12313,asdasd,1231,Everton Park,22/06/2022 22:43:19,22/06/2022 22:43:23,1
