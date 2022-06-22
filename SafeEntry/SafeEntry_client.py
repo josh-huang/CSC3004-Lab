@@ -98,7 +98,12 @@ class SafeEntryClient(object):
             print('Type the location that you wish to check out: ')
             for i in current_check_in_location: 
                 print (i)
-            check_out_location = str(input(''))
+            while True:
+                check_out_location = str(input(''))
+                if len(check_out_location) == 0:
+                    print('Please enter location')
+                else:
+                    break
             # add check out time and change the current check in status to 1
             for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
                 if row['Location'] == check_out_location:

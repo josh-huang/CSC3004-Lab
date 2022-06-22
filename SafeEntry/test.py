@@ -14,7 +14,6 @@
 #     print(row['Location'])
 #     print(row['Client ID'])
 # import pywhatkit
-
 # pywhatkit.sendwhatmsg("+6597156459", 'Hello:)', 2, 41, wait_time=10)'
 from datetime import datetime
 from datetime import timedelta 
