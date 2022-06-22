@@ -62,16 +62,11 @@ class SafeEntryMOH(object):
     
 if __name__ == "__main__":
     logging.basicConfig()
-
-    # get copy of the lcoation array
-    temp = random_location[:]
-    location_name = random.choice(temp)
-    temp.remove(location_name)
     
     format = "%d/%m/%Y %H:%M"
     
-    print("\nLocation: " + location_name)
     while True:
+        location_name = str(input("\nEnter the location: \n"))
         visit_date = str(input("\nDeclare the check-in date and time visted by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n")) 
         checkOut_date = str(input("Declare check-out date and time visited by a COVID-19 case (Format should be: DD/M/YYYY H:MM):\n"))
         try:
