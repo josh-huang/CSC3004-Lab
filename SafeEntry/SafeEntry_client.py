@@ -133,6 +133,7 @@ class SafeEntryClient(object):
         # print out the response from server 
         for reply in response:
             print(reply) 
+        
 
     # get current time function
     def getCurrentTime(self):

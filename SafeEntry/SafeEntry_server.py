@@ -250,12 +250,17 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             for index, row in df.loc[df['Client Name'] == request.user_name].iterrows():
                 if str(row['Client ID']) == request.user_id:
                     user_all_location.append(row['Location'])
-            
-            for i in user_all_location:
+                    
+            if len(user_all_location) == 0:
                 locationReply = SafeEntry_pb2.LocationReply()
-                locationReply.location_name = i
+                locationReply.res_msg = 'You have not entered any location yet'
                 yield locationReply
-                time.sleep(2)
+            else:
+                for i in user_all_location:
+                    locationReply = SafeEntry_pb2.LocationReply()
+                    locationReply.res_msg = i
+                    yield locationReply
+                    time.sleep(2)
         except:
             # print out failure message
             print("Get location request failed, please try again")

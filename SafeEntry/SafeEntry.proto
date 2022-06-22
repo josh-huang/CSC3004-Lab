@@ -89,5 +89,5 @@ message LocationRequest {
 
 // The response message containing the reply message from server 
 message LocationReply {
-  string location_name = 1;
+  string res_msg = 1;
 }
