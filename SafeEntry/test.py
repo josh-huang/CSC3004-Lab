@@ -18,11 +18,16 @@
 from datetime import datetime
 from datetime import timedelta 
 now = datetime.now()
-# get current time  
+# # get current time  
+# current_time = now.strftime("%H:%M:%S") 
+# now += timedelta(seconds=60) 
+# future_time = now.strftime("%H:%M:%S")
+# future_hour = future_time.split(':')[0].lstrip('0')
+# future_minutes = future_time.split(':')[1].lstrip('0')
+# print(future_minutes) 
 current_time = now.strftime("%H:%M:%S") 
-now += timedelta(seconds=60) 
+now += timedelta(seconds=90) 
 future_time = now.strftime("%H:%M:%S")
-future_hour = future_time.split(':')[0].lstrip('0')
-future_minutes = future_time.split(':')[1].lstrip('0')
-print(future_minutes) 
-
+future_hour = future_time.split(':')[0]
+future_minutes = future_time.split(':')[1]
+print(future_hour)
