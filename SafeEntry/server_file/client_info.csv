@@ -1,8 +1,25 @@
 ,Client ID,Client Name,Client Phone,Location,Check In Time,Check Out Time,Current Check In status
-0,12,Jiashu,6597869677,one-north,22/6/2022 21:44,,0
-1,3123,yiiyuiy,123,Port,22/6/2022 22:21,22/6/2022 22:22,1
-2,3123,yiiyuiy,123,Singapore Polytechnic,22/6/2022 22:21,22/6/2022 22:22,1
-3,12312,Jiashu,6597156459,one-north,22/6/2022 22:26,22/6/2022 22:26,1
-4,1231,Jiashu,223211,Marine Parade,22/6/2022 22:29,22/6/2022 22:29,1
-5,12312,usadhas,122,River Valley,22/6/2022 22:38,22/6/2022 22:38,1
-6,12313,asdasd,1231,Everton Park,22/6/2022 22:43,22/6/2022 22:43,1
+0,21512,Josh,12451,Singapore General Hospital,23/06/2022 11:59:22,,0
+1,13414,Joshua,124451,Potong Pasir,23/06/2022 11:59:24,,0
+2,21512,Josh,12451,Kallang Bahru,23/06/2022 11:59:38,23/06/2022 11:59:43,1
+3,13414,Joshua,124451,Singapore Polytechnic,23/06/2022 11:59:40,,0
+4,13414,Joshua,124451,Marymount,23/06/2022 12:00:09,,0
+5,12414,Josh,213124,Alexandra North,23/06/2022 12:06:14,,0
+6,214151,Joshua,124412,Istana Negara,23/06/2022 12:06:19,,0
+7,1231451,Jiashu,1245124,Marina Centre,23/06/2022 12:06:22,,0
+8,12341,Jiashu,1414,Marina East,23/06/2022 12:11:07,,0
+9,12314,wfhuiaf,124515,Holland Drive,23/06/2022 12:17:03,,0
+10,4124,Josh,123145,Straits View,23/06/2022 12:27:51,,0
+11,1241,Joshua,151231,Pasir Panjang,23/06/2022 12:28:05,,0
+12,12515,Jiashu,151141,River Valley,23/06/2022 12:28:09,,0
+13,124,Jiashu,123141,Singapore General Hospital,23/06/2022 12:34:23,,0
+14,124,Jiashu,123141,Newton,23/06/2022 12:35:28,,0
+15,141421,Joshua,341251,Tiong Bahru,23/06/2022 12:38:06,,0
+16,1241,Josh,4124,Marina East,23/06/2022 12:47:39,,0
+17,1412,Jiashu,12341,Downtown Core,23/06/2022 12:54:20,,0
+18,12412,qiqi,1241,Marina South,23/06/2022 12:55:04,,0
+19,124124,wiwi,12412,Geylang East,23/06/2022 12:55:08,,0
+20,12412,qiqi,1241,Bugis,23/06/2022 12:55:23,,0
+21,32141,riki,12514241,Marina South,23/06/2022 12:57:34,23/06/2022 12:57:58,1
+22,412421,luna,5123414,Mountbatten,23/06/2022 12:57:46,23/06/2022 12:58:36,1
+,32141,riki,12514241,Mountbatten,23/06/2022 12:59:18,,0

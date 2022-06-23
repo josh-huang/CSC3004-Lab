@@ -20,7 +20,6 @@ import platform
 from subprocess import Popen
 import multiprocessing
 import asyncio
-from time import sleep
 
 # client info will be stored in seperate file with id and name on the file tilte  
 
@@ -43,15 +42,9 @@ class SafeEntryClient(object):
     # run loop   
     def run(self):
         # get choice from user 
-        user_choice = 0
-        while True:
-            sleep(1)
-            user_choice = str(input(f"\nHello {self.user_name}\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n [6]. Exit\nEnter your Choice here: "))
-            if int(user_choice) > 6 or int(user_choice) < 1: 
-                print('Please choose between 1 - 6')
-            else:
-                break
-                # user choose Check in function 
+        print(f"\nHello {self.user_name}\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n")
+        user_choice = str(input('Enter your choice here: ' ))
+        # user choose Check in function 
         if user_choice == "1":
             # call local check in function
             self.checkIn()       
@@ -71,10 +64,8 @@ class SafeEntryClient(object):
         elif user_choice == "5":
             # display location function  
             self.getAllLocation()
-        elif user_choice == "6":
-            # display location function  
-            exit()
-                    
+        else:
+            print('Please choose between 1 - 5 \n')
     
     # individual check in function
     def checkIn(self, groupCheckLocation = None):
@@ -95,7 +86,6 @@ class SafeEntryClient(object):
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
             writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}','Client_phone': f'{self.user_phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
-        sleep(1)
         response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=self.user_name, id=self.user_id, location=user_location, check_in_time=current_time, phone_number = self.user_phone))
         print(f"\n{self.user_name} Response Received: ")
         print(str(response.res))
@@ -113,7 +103,7 @@ class SafeEntryClient(object):
             current_check_in_location.append(row['Location'])
         # user select the location that they wish to check out 
         if len(current_check_in_location) != 0: 
-            print(f'\n{self.user_name} Type the location that you wish to check out: ')
+            print('Type the location that you wish to check out: ')
             for i in current_check_in_location: 
                 print (i)
             while True:
@@ -132,9 +122,8 @@ class SafeEntryClient(object):
             df.to_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         
             # get response from server 
-            sleep(1)
             response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
-            print(f"\n{self.user_name} Response Received: ")
+            print("Response Received: ")
             print(str(response.res))
         else:
             print('You have no location to check out.')
@@ -143,13 +132,13 @@ class SafeEntryClient(object):
     def groupCheckIn(self):
         # get response from server 
         response = self.stub.groupCheckIn(self.get_input_from_user_checkin())
-        print(f"\n{self.user_name} Response Received: ")
+        print("Response Received: ")
         print(str(response.res))
     
     # group check out function 
     def groupCheckOut(self):
         response = self.stub.groupCheckOut(self.get_input_from_user_checkout())
-        print(f"\n{self.user_name} Response Received: ")
+        print("Response Received: ")
         print(str(response.res))
         
     # function to return all the location that visited by the client 
@@ -161,6 +150,7 @@ class SafeEntryClient(object):
         for reply in response:
             print(reply) 
         
+
     # get current time function
     def getCurrentTime(self):
         now = datetime.now()
@@ -259,20 +249,9 @@ class SafeEntryClient(object):
 #     while user_decision != "e" and user_decision != "E": 
 #         client.run()
 #         user_decision = str(input("Press E to exit the program or other button to continue.\n"))
-def run_client():
-    while True: 
-        user_name = str(input('Enter the name: '))
-        user_id = str(input('Enter the id: '))
-        user_phone = str(input('Enter the phone number: '))
-        if not user_name.isalpha():
-            print("Name must contains alphabets only. Please try again\n")
-        elif not user_phone.isnumeric():
-            print("Phone must contains numbers only. Please try again\n")
-        else:
-            break
+def run_client(user_name, user_id, user_phone):
     # initiate user client object
     client = SafeEntryClient(user_name, user_id, user_phone)
-
     # valid = SafeEntryClient.validation(user_name, user_phone)
     # main loop
     user_decision=''
@@ -288,20 +267,23 @@ def run_client():
 if __name__ == "__main__":
     logging.basicConfig()
      # open new consoles, display messages
-    # echos = [[sys.executable, "-c",run_client()],
-    #          [sys.executable, "-c",run_client()]
-    #         ]
-    # processes = [Popen(new_window_command + echo) for echo in echos]
-
-    # # wait for the windows to be closed
-    # for proc in processes:
-    #     proc.wait()       
-    user_num = int(input('Enter the number of user: '))
-    for _ in range(user_num):
-        t = threading.Thread(target=run_client)
+    user_num = int(input('How many user you want to test: '))
+    for i in range(user_num): 
+        while True:
+            user_name = str(input('Enter the name: '))
+            user_id = str(input('Enter your id: '))
+            user_phone = str(input('Enter your phone number: '))
+            if not user_name.isalpha():
+                print("Name must contains alphabets only. Please try again\n")
+            elif not user_phone.isnumeric():
+                print("Phone must contains numbers only. Please try again\n")
+            else:
+                break
+        t = threading.Thread(target=run_client, args=(user_name, user_id, user_phone))
         t.start()
+    
 
-
+   
     
         
                 

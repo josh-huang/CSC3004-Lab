@@ -58,11 +58,11 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 writer_object.writerow({'Location': f'{request.location}', 'Current Location Covid Status': 0})
             
             # reply message to be sent to client 
-            reply_message = 'Check In ' + request.location + ' successful' 
+            reply_message = f'{request.name} Check In {request.location} successful' 
         
         except: 
             # reply message to be sent to client 
-            reply_message = 'Check In ' + request.location + ' failed' 
+            reply_message = f'{request.name} Check In {request.location} failed'  
             
         return SafeEntry_pb2.CheckInReply(res=reply_message)
     
@@ -92,10 +92,10 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             # # drop dataframe Unname column 
             # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
             # df_location.to_csv(f'server_file/location_info.csv')                 
-            reply_message = 'Check out ' + request.location + ' successful'
+            reply_message = f'{request.name} Check Out {request.location} successful'
             
         except:
-            reply_message = 'Check out ' + request.location + ' failed'
+            reply_message = f'{request.name} Check In {request.location} failed'
            
         return SafeEntry_pb2.CheckOutReply(res=reply_message)
             
