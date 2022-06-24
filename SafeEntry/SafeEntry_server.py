@@ -69,13 +69,12 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     # individual check out function 
     def checkOut(self, request, context):
-        # print out the request message
         try: 
+            # print out the request message
             print("Check out request received: ")
             print(request)
             # add the check out details in client_info.txt
             df = pd.read_csv(f'server_file/client_info.csv')
-            # df = pd.read_csv(f'server_file/client_info.csv')
             for index, row in df.iterrows():
                 if row['Location'] == request.location and str(row['Client ID']) == request.id:
                     df.loc[index, 'Check Out Time'] = request.check_out_time
@@ -83,15 +82,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
             # drop dataframe Unname column 
             df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
             df.to_csv(f'server_file/client_info.csv') #not updating
-            
-                     
-            # df_location = pd.read_csv(f'server_file/location_info.csv')
-            # for index, row in df_location.iterrows():
-            #     if row['Location'] == request.location and row['Checked In Client ID'] == request.id:
-            #         df_location.loc[index, 'Check Out Time'] = request.check_out_time
-            # # drop dataframe Unname column 
-            # df_location.drop(df_location.filter(regex="Unname"),axis=1, inplace=True)
-            # df_location.to_csv(f'server_file/location_info.csv')                 
+                  
             reply_message = f'{request.name} Check Out {request.location} successful'
             
         except:
@@ -103,6 +94,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     # group check in function 
     def groupCheckIn(self, request_iterator, context):
         try: 
+            # check each request sent from client 
             for request in request_iterator:
                 # print out the request message
                 print("Check out request received: ")
@@ -145,7 +137,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 # print out the request message
                 print("Check out request received: ")
                 print(request)
-                
+                # append the check out time and change Current Check In Status to 1 for the client in the client_info.csv
                 df = pd.read_csv(f'server_file/client_info.csv')
                 for index, row in df.iterrows():
                     if row['Location'] == request.location and row['Client ID'] == request.id:
@@ -166,11 +158,11 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
 
     # MOH update location 
     def updateLocation(self, request, context):
-        # try:
-            #update location function here 
+            # print out request message 
             print("Update location status request received: ")
             print(request)
             
+            # inititate array for covid affected user phone, name, id and check-in check-out time
             affected_user_phone = []
             affected_user_name = []
             affected_user_id = []
@@ -207,6 +199,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 affected_user_check_in.append(row['Check In Time'])
                 affected_user_check_out.append(row['Check Out Time'])
             
+            # loop through the array and send whatsapp notification messgae 
             if len(affected_user_phone) != 0:
                 for i in range(len(affected_user_phone)):
                     
@@ -231,15 +224,8 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                         pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, int(future_hour), int(future_minutes), wait_time=10)
             
             reply_message = 'Updates have been received for : ' + request.location_name  + ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date
-            #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
             return SafeEntry_pb2.MOHReply(res=reply_message)
 
-        # except:
-        #     # reply message to be sent to client 
-        #     reply_message = 'Update failed, Please try again.' 
-        #     return SafeEntry_pb2.MOHReply(res=reply_message)
-        #return SafeEntry_pb2.MOHReply(res='Update information have been received.')
-           
 
     # get all the location that visited by the client
     def getLocation(self, request, context):

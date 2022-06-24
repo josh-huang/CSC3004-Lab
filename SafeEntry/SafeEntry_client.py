@@ -2,7 +2,6 @@ from __future__ import print_function
 from asyncio import run
 from http.client import ResponseNotReady
 import logging
-from tabnanny import check
 import grpc
 import SafeEntry_pb2
 import SafeEntry_pb2_grpc
@@ -15,14 +14,9 @@ import pandas as pd
 import time 
 import os.path
 import threading
-import sys
-import platform
-from subprocess import Popen
-import multiprocessing
-import asyncio
 from time import sleep
 
-# client info will be stored in seperate file with id and name on the file tilte  
+# client check in and check out info will be stored in seperate file with id and name on the file's title 
 
 class SafeEntryClient(object):
     
@@ -31,7 +25,7 @@ class SafeEntryClient(object):
         self.channel = grpc.insecure_channel("localhost:50051")
         # indicate the stub that connect to the server 
         self.stub = SafeEntry_pb2_grpc.SafeEntryStub(self.channel)
-        # get user name and user id 
+        # get user name, user id and user phone 
         self.user_name = name
         self.user_id = id
         self.user_phone = user_phone
@@ -72,27 +66,29 @@ class SafeEntryClient(object):
             # display location function  
             self.getAllLocation()
         elif user_choice == "6":
-            # display location function  
+            # exit the program 
             exit()
                     
     
     # individual check in function
     def checkIn(self, groupCheckLocation = None):
-        # user check in location (use random location to simulate)
+        # If no group check in, the location will be randomly generated 
+        # If group check in is called, the location for check in will follow groupCheckIn location 
         if groupCheckLocation is None:
             user_location = random.choice(self.temp)
             self.temp.remove(user_location)
         else:
             user_location = groupCheckLocation
-        # get current time 
+        # Get current time 
         current_time = self.getCurrentTime()
+        # Check if the file exists 
         file_exists_client = os.path.isfile(f'client_file/{self.user_id}_{self.user_name}.csv')
-        # store the client check in and check out details in the {request.name} csv file 
+        # store the client check in and check out details in the individual csv file 
         with open(f'client_file/{self.user_id}_{self.user_name}.csv', mode='a', newline='') as csv_file:
             if not file_exists_client: 
                 writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
                 writer.writeheader()
-            writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
+            writer_object = DictWriter(csv_file, fieldnames=self.fieldnames) 
             writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}','Client_phone': f'{self.user_phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
         # get response from server 
         sleep(1)
@@ -102,20 +98,21 @@ class SafeEntryClient(object):
         
     # individual check out function 
     def checkOut(self):
-        # call current time function 
+        # Get current time 
         current_time = self.getCurrentTime()
-        # current check in location array 
+        # inititate current check in location array 
         current_check_in_location = []
-        # check the client file and append check in status = 0 location into the array 
-        
+        # check the client file and append the location with check in status = 0 into the array 
         df = pd.read_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
             current_check_in_location.append(row['Location'])
-        # user select the location that they wish to check out 
+        # user choose the location that they wish to check out 
         if len(current_check_in_location) != 0: 
             print(f'\n{self.user_name} Type the location that you wish to check out: ')
+            # print out the location name in the current_check_in_location list
             for i in current_check_in_location: 
                 print (i)
+            # user input location they wish to check out
             while True:
                 check_out_location = str(input(''))
                 if len(check_out_location) == 0:
@@ -148,13 +145,14 @@ class SafeEntryClient(object):
     
     # group check out function 
     def groupCheckOut(self):
+        # get response from server
         response = self.stub.groupCheckOut(self.get_input_from_user_checkout())
         print(f"\n{self.user_name} Response Received: ")
         print(str(response.res))
         
     # function to return all the location that visited by the client 
     def getAllLocation(self):
-        #send get lcoation request to server 
+        # send get lcoation request to server 
         location_request = SafeEntry_pb2.LocationRequest(user_name=self.user_name, user_id=self.user_id)
         response = self.stub.getLocation(location_request)
         # print out the response from server 
@@ -168,6 +166,7 @@ class SafeEntryClient(object):
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         return current_time
     
+    # get user input for groupCheckIn function
     def get_input_from_user_checkin(self):
         # user check in location (use random location to simulate)
         user_location = random.choice(self.temp)
@@ -177,9 +176,9 @@ class SafeEntryClient(object):
         name = ''
         # self check in
         self.checkIn(groupCheckLocation=user_location)
-        # loop to get the name and id for each group memeber
+        # loop to get the name, id and phone number for each group memeber
         while name != "q":
-            name, id, phone = input('Enter your family member name (enter _ if space), id and phone that you wish to check in or type \'q 1 1\' to exit: \n').split()
+            name, id, phone = input(f'{self.user_name} Enter your family member name (enter _ if space), id and phone that you wish to check in or type \'q 1 1\' if finished inputting: \n').split()
             if name != 'q' and id != '1' and phone != '1':
                 file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
                 with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
@@ -192,14 +191,16 @@ class SafeEntryClient(object):
                 groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
                 yield groupCheckInRequest
                 time.sleep(1)
-            
+    
+    # get user input for groupCheckOut function    
     def get_input_from_user_checkout(self):
         # get current time 
         current_time = self.getCurrentTime()
         name = ''
+        # user input the user name and user id that they help to check out
         while name != "q":
             current_check_in_location = []
-            name, id = input('Enter your family member name (enter _ if space) and id that you wish to check out or type \'q 1\' to exit: \n').split()
+            name, id = input(f'{self.user_name} Enter your family member name (enter _ if space) and id that you wish to check out or type \'q 1\' if finished inputting: \n').split()
             if name != 'q' and id != '1':
                 df = pd.read_csv(f'client_file/{id}_{name}.csv')
                 for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
@@ -221,49 +222,15 @@ class SafeEntryClient(object):
                 yield groupCheckOutRequest
                 time.sleep(1)
 
-
-    # def validation(name,phone):
-    #     if user_name.isalpha():
-    #         if int(user_phone):
-    #             isValid = True
-    #         else:
-    #             isValid = False
-    #             print("Phone must contains numbers only. Please try again\n")
-    #     else:
-    #         isValid = False
-    #         print("Name must contains alphabets only. Please try again\n")
-        
-    #     return isValid
-
-                
-
-# if __name__ == "__main__":
-#     logging.basicConfig()
-#     # get user name and id 
-#     while True: 
-#         user_name = str(input('Enter your name: '))
-#         user_id = str(input('Enter your id: '))
-#         user_phone = str(input('Enter your phone number: '))
-#         if not user_name.isalpha():
-#             print("Name must contains alphabets only. Please try again\n")
-#         elif not user_phone.isnumeric():
-#             print("Phone must contains numbers only. Please try again\n")
-#         else:
-#             break
-#     # initiate user client object
-#     client = SafeEntryClient(user_name, user_id, user_phone)
-
-#     # valid = SafeEntryClient.validation(user_name, user_phone)
-#     # main loop
-#     user_decision=''
-#     while user_decision != "e" and user_decision != "E": 
-#         client.run()
-#         user_decision = str(input("Press E to exit the program or other button to continue.\n"))
+            
+# function to generate client object
 def run_client():
     while True: 
+        # user input name, id and phone number 
         user_name = str(input('Enter the name: '))
         user_id = str(input('Enter the id: '))
         user_phone = str(input('Enter the phone number: '))
+        # validation check for user name and user phone 
         if not user_name.isalpha():
             print("Name must contains alphabets only. Please try again\n")
         elif not user_phone.isnumeric():
@@ -272,30 +239,16 @@ def run_client():
             break
     # initiate user client object
     client = SafeEntryClient(user_name, user_id, user_phone)
-
-    # valid = SafeEntryClient.validation(user_name, user_phone)
     # main loop
     user_decision=''
     while user_decision != "e" and user_decision != "E": 
         client.run()
         user_decision = str(input(f"\nHello {user_name} Press E to exit the program or other button to continue.\n"))
-
-# if platform.system() == "Windows":
-#     new_window_command = "cmd.exe /c start".split()
-# else:  #XXX this can be made more portable
-#     new_window_command = "x-terminal-emulator -e".split()
+    
     
 if __name__ == "__main__":
     logging.basicConfig()
-     # open new consoles, display messages
-    # echos = [[sys.executable, "-c",run_client()],
-    #          [sys.executable, "-c",run_client()]
-    #         ]
-    # processes = [Popen(new_window_command + echo) for echo in echos]
-
-    # # wait for the windows to be closed
-    # for proc in processes:
-    #     proc.wait()       
+    # user input the number of concurrent user to use the system
     user_num = int(input('Enter the number of user: '))
     for _ in range(user_num):
         t = threading.Thread(target=run_client)
