@@ -1,5 +1,6 @@
 from __future__ import print_function
 from asyncio import run
+from concurrent.futures import thread
 from http.client import ResponseNotReady
 import logging
 import grpc
@@ -39,34 +40,36 @@ class SafeEntryClient(object):
         # get choice from user 
         user_choice = 0
         while True:
-            sleep(1)
             user_choice = str(input(f"\nHello {self.user_name}\nWhich function do you wish to perform?\n [1]. Check in\n [2]. Check out\n [3]. Group Check in\n [4]. Group Check out\n [5]. Display the history of visited locations\n [6]. Exit\nEnter your Choice here: "))
             if int(user_choice) > 6 or int(user_choice) < 1: 
                 print('Please choose between 1 - 6')
-            else:
+            elif not user_choice.isnumeric():
+                print('Please choose number between 1 - 6')
+            else: 
                 break
                 # user choose Check in function 
         if user_choice == "1":
             # call local check in function
-            self.checkIn()       
+            self.checkIn()     
         # user choose Check out function 
         elif user_choice == "2":
             # user check out location in the current location array 
-            self.checkOut()       
+            self.checkOut()    
         # user choose Group check in function 
         elif user_choice == "3":
             # group check in function 
-            self.groupCheckIn()      
+            self.groupCheckIn()   
         # user choose Group check out function 
         elif user_choice == "4":
             # group check out function 
-            self.groupCheckOut()      
+            self.groupCheckOut()  
         # user choose display location history function 
         elif user_choice == "5":
             # display location function  
             self.getAllLocation()
         elif user_choice == "6":
             # exit the program 
+            print('Log out successful.\n')
             exit()
                     
     
@@ -74,6 +77,7 @@ class SafeEntryClient(object):
     def checkIn(self, groupCheckLocation = None):
         # If no group check in, the location will be randomly generated 
         # If group check in is called, the location for check in will follow groupCheckIn location 
+        
         if groupCheckLocation is None:
             user_location = random.choice(self.temp)
             self.temp.remove(user_location)
@@ -224,36 +228,47 @@ class SafeEntryClient(object):
 
             
 # function to generate client object
-def run_client():
-    while True: 
-        # user input name, id and phone number 
-        user_name = str(input('Enter the name: '))
-        user_id = str(input('Enter the id: '))
-        user_phone = str(input('Enter the phone number: '))
-        # validation check for user name and user phone 
-        if not user_name.isalpha():
-            print("Name must contains alphabets only. Please try again\n")
-        elif not user_phone.isnumeric():
-            print("Phone must contains numbers only. Please try again\n")
-        else:
-            break
-    # initiate user client object
+def run_client(user_name, user_id, user_phone):
     client = SafeEntryClient(user_name, user_id, user_phone)
     # main loop
     user_decision=''
     while user_decision != "e" and user_decision != "E": 
         client.run()
         user_decision = str(input(f"\nHello {user_name} Press E to exit the program or other button to continue.\n"))
+    print('Log out successful.\n')
     
     
 if __name__ == "__main__":
     logging.basicConfig()
     # user input the number of concurrent user to use the system
+    user_name_list = []
+    user_id_list = []
+    user_phone_list = []
     user_num = int(input('Enter the number of user: '))
-    for _ in range(user_num):
-        t = threading.Thread(target=run_client)
+    for i in range(user_num):
+        print(f'User No.{i+1}: ')
+        while True: 
+            # user input name, id and phone number 
+            user_name = str(input('Enter the name: '))
+            user_id = str(input('Enter the id: '))
+            user_phone = str(input('Enter the phone number(add 65 at the front eg. 6592375431): '))
+            # validation check for user name and user phone 
+            if not user_name.isalpha():
+                print("Name must contains alphabets only. Please try again\n")
+            elif not user_phone.isnumeric():
+                print("Phone must contains numbers only. Please try again\n")
+            else:
+                break
+        user_name_list.append(user_name)
+        user_id_list.append(user_id)
+        user_phone_list.append(user_phone)
+        # initiate user client object
+    for i in range(len(user_name_list)):
+        t = threading.Thread(target=run_client, args=(user_name_list[i], user_id_list[i], user_phone_list[i]))
+        print(f'\n{user_name_list[i]} Thread started: ')
         t.start()
-
+        t.join()
+    print('All user has signed out.\n')
 
     
         

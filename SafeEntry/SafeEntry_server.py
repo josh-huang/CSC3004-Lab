@@ -3,7 +3,6 @@ import logging
 import grpc
 import SafeEntry_pb2
 import SafeEntry_pb2_grpc
-from location_scrap import random_location
 from datetime import datetime
 from datetime import timedelta 
 import csv
@@ -22,6 +21,7 @@ import pywhatkit
 class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
     
     def __init__(self):
+        print('Server starts...')
         # initate the field name for both csv file 
         self.fieldnames = ['Unname', 'Client ID', 'Client Name','Client Phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
         self.fieldnames2 = ['Unname', 'Location', 'Current Location Covid Status', 'Covid Affected Check-In Date and Time','Covid Affected Check-Out Date and Time']
