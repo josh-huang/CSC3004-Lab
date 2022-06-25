@@ -269,7 +269,7 @@ if __name__ == "__main__":
     user_name_list = []
     user_id_list = []
     user_phone_list = []
-    user_choice = input('Enter 1 to test concurrency or other key to run the program normally: ')
+    user_choice = input('Enter 1 to test concurrency or other key to test the program functions: ')
     if user_choice == "1":
         test_concurrency()
     else:
