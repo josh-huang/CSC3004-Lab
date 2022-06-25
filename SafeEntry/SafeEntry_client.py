@@ -273,24 +273,27 @@ if __name__ == "__main__":
     if user_choice == "1":
         test_concurrency()
     else:
-        user_num = int(input('Enter the number of user: '))
-        for i in range(user_num):
-            print(f'User No.{i+1}: ')
-            while True: 
-                # user input name, id and phone number 
-                user_name = str(input('Enter the name: '))
-                user_id = str(input('Enter the id: '))
-                user_phone = str(input('Enter the phone number(add 65 at the front eg. 6592375431): '))
-                # validation check for user name and user phone 
-                if not user_name.isalpha():
-                    print("Name must contains alphabets only. Please try again\n")
-                elif not user_phone.isnumeric():
-                    print("Phone must contains numbers only. Please try again\n")
-                else:
-                    break
-            user_name_list.append(user_name)
-            user_id_list.append(user_id)
-            user_phone_list.append(user_phone)
+        try:
+            user_num = int(input('Enter the number of user: '))
+            for i in range(user_num):
+                print(f'User No.{i+1}: ')
+                while True: 
+                    # user input name, id and phone number 
+                    user_name = str(input('Enter the name: '))
+                    user_id = str(input('Enter the id: '))
+                    user_phone = str(input('Enter the phone number(add 65 at the front eg. 6592375431): '))
+                    # validation check for user name and user phone 
+                    if not user_name.isalpha():
+                        print("Name must contains alphabets only. Please try again\n")
+                    elif not user_phone.isnumeric():
+                        print("Phone must contains numbers only. Please try again\n")
+                    else:
+                        break
+                user_name_list.append(user_name)
+                user_id_list.append(user_id)
+                user_phone_list.append(user_phone)
+        except:
+            print('Please enter valid number.')
             # initiate user client object
         for i in range(len(user_name_list)):
             t = threading.Thread(target=run_client, args=(user_name_list[i], user_id_list[i], user_phone_list[i]))
