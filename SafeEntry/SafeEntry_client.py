@@ -192,9 +192,14 @@ class SafeEntryClient(object):
                     writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
                     # append the check in info to the client file 
                     writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Client_phone': f'{phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
+                    df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                    df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+                    df.to_csv(f'client_file/{id}_{name}.csv')
                 groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
                 yield groupCheckInRequest
                 time.sleep(1)
+            else:
+                print('Please enter correct format.')
     
     # get user input for groupCheckOut function    
     def get_input_from_user_checkout(self):
@@ -225,6 +230,8 @@ class SafeEntryClient(object):
                 groupCheckOutRequest = SafeEntry_pb2.GroupCheckOutRequest(name=name, id=id, location=check_out_location, check_out_time=current_time)
                 yield groupCheckOutRequest
                 time.sleep(1)
+            else:
+                print('Please enter correct format.')
 
             
 # function to generate client object
