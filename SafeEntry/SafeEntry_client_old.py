@@ -33,7 +33,7 @@ class SafeEntryClient(object):
         # get copy of the lcoation array
         self.temp = random_location[:]
         # initiate the client info file and write header to it 
-        self.fieldnames = ['Unname','Client_id', 'Client_name', 'Client_phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
+        self.fieldnames = ['Client_id', 'Client_name', 'Client_phone', 'Location', 'Check In Time', 'Check Out Time', 'Current Check In status']
         
     # run loop   
     def run(self):
@@ -94,8 +94,9 @@ class SafeEntryClient(object):
                 writer.writeheader()
             writer_object = DictWriter(csv_file, fieldnames=self.fieldnames) 
             writer_object.writerow({'Client_id': f'{self.user_id}', 'Location': f'{user_location}','Client_name': f'{self.user_name}','Client_phone': f'{self.user_phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
+        
         # get response from server 
-        sleep(1)
+        #sleep(1)
         response = self.stub.checkIn(SafeEntry_pb2.CheckInRequest(name=self.user_name, id=self.user_id, location=user_location, check_in_time=current_time, phone_number = self.user_phone))
         print(f"\n{self.user_name} Response Received: ")
         print(str(response.res))
@@ -133,7 +134,7 @@ class SafeEntryClient(object):
             df.to_csv(f'client_file/{self.user_id}_{self.user_name}.csv')
         
             # get response from server 
-            sleep(1)
+            #sleep(1)
             response = self.stub.checkOut(SafeEntry_pb2.CheckOutRequest(name=self.user_name, id=self.user_id, location=check_out_location, check_out_time=current_time))
             print(f"\n{self.user_name} Response Received: ")
             print(str(response.res))
@@ -193,12 +194,14 @@ class SafeEntryClient(object):
                         writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
                         # append the check in info to the client file 
                         writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Client_phone': f'{phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
+                    
                     df = pd.read_csv(f'client_file/{id}_{name}.csv')
                     df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
                     df.to_csv(f'client_file/{id}_{name}.csv')
+                    
                     groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
                     yield groupCheckInRequest
-                    time.sleep(1)
+                    #time.sleep(1)
             except:
                 print('Please enter correct format.')
         
@@ -251,7 +254,7 @@ def run_client(user_name, user_id, user_phone):
 def test_concurrency():
     client1 = SafeEntryClient("test1", '12345', '6592786512')
     client2 = SafeEntryClient("test2", '23456', '6592786513')
-    user_choice = input('\nEnter 1 to test concurrency for checkin or other ket for checkout: ')
+    user_choice = input('\nEnter 1 to test concurrency for checkin or other key for checkout: ')
     if user_choice == "1":
         t1 = threading.Thread(target=client1.checkIn)
         t2 = threading.Thread(target=client2.checkIn)
@@ -269,31 +272,28 @@ if __name__ == "__main__":
     user_name_list = []
     user_id_list = []
     user_phone_list = []
-    user_choice = input('Enter 1 to test concurrency or other key to run the program normally: ')
+    user_choice = input('Enter 1 to test concurrency or other key to test the program functions: ')
     if user_choice == "1":
         test_concurrency()
     else:
-        try:
-            user_num = int(input('Enter the number of user: '))
-            for i in range(user_num):
-                print(f'User No.{i+1}: ')
-                while True: 
-                    # user input name, id and phone number 
-                    user_name = str(input('Enter the name: '))
-                    user_id = str(input('Enter the id: '))
-                    user_phone = str(input('Enter the phone number(add 65 at the front eg. 6592375431): '))
-                    # validation check for user name and user phone 
-                    if not user_name.isalpha():
-                        print("Name must contains alphabets only. Please try again\n")
-                    elif not user_phone.isnumeric():
-                        print("Phone must contains numbers only. Please try again\n")
-                    else:
-                        break
-                user_name_list.append(user_name)
-                user_id_list.append(user_id)
-                user_phone_list.append(user_phone)
-        except:
-            print('Please enter valid number.')
+        user_num = int(input('Enter the number of user: '))
+        for i in range(user_num):
+            print(f'User No.{i+1}: ')
+            while True: 
+                # user input name, id and phone number 
+                user_name = str(input('Enter the name: '))
+                user_id = str(input('Enter the id: '))
+                user_phone = str(input('Enter the phone number(add 65 at the front eg. 6592375431): '))
+                # validation check for user name and user phone 
+                if not user_name.isalpha():
+                    print("Name must contains alphabets only. Please try again\n")
+                elif not user_phone.isnumeric():
+                    print("Phone must contains numbers only. Please try again\n")
+                else:
+                    break
+            user_name_list.append(user_name)
+            user_id_list.append(user_id)
+            user_phone_list.append(user_phone)
             # initiate user client object
         for i in range(len(user_name_list)):
             t = threading.Thread(target=run_client, args=(user_name_list[i], user_id_list[i], user_phone_list[i]))

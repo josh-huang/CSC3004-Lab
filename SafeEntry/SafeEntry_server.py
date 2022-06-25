@@ -140,7 +140,7 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                 # append the check out time and change Current Check In Status to 1 for the client in the client_info.csv
                 df = pd.read_csv(f'server_file/client_info.csv')
                 for index, row in df.iterrows():
-                    if row['Location'] == request.location and row['Client ID'] == request.id:
+                    if row['Location'] == request.location and str(row['Client ID']) == request.id:
                         df.loc[index, 'Check Out Time'] = request.check_out_time
                         df.loc[index, 'Current Check In status'] = 1
                 # drop dataframe Unname column 
