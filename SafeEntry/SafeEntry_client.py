@@ -183,54 +183,57 @@ class SafeEntryClient(object):
         # loop to get the name, id and phone number for each group memeber
         while name != "q":
             name, id, phone = input(f'{self.user_name} Enter your family member name (enter _ if space), id and phone that you wish to check in or type \'q 1 1\' if finished inputting: \n').split()
-            if name != 'q' and id != '1' and phone != '1':
-                file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
-                with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
-                    if not file_exists: 
-                        writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
-                        writer.writeheader()
-                    writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
-                    # append the check in info to the client file 
-                    writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Client_phone': f'{phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
-                    df = pd.read_csv(f'client_file/{id}_{name}.csv')
-                    df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-                    df.to_csv(f'client_file/{id}_{name}.csv')
-                groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
-                yield groupCheckInRequest
-                time.sleep(1)
-            else:
+            try:
+                if name != 'q' and id != '1' and phone != '1':
+                    file_exists = os.path.isfile(f'client_file/{id}_{name}.csv')
+                    with open(f'client_file/{id}_{name}.csv', mode='a+', newline='') as csv_file:
+                        if not file_exists: 
+                            writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+                            writer.writeheader()
+                        writer_object = DictWriter(csv_file, fieldnames=self.fieldnames)
+                        # append the check in info to the client file 
+                        writer_object.writerow({'Client_id': f'{id}', 'Location': f'{user_location}','Client_name': f'{name}', 'Client_phone': f'{phone}' ,'Check In Time': f'{current_time}', 'Current Check In status': 0})
+                        df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                        df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+                        df.to_csv(f'client_file/{id}_{name}.csv')
+                    groupCheckInRequest = SafeEntry_pb2.GroupCheckInRequest(name=name, id=id, location=user_location, check_in_time=current_time, phone_number=phone)
+                    yield groupCheckInRequest
+                    time.sleep(1)
+            except:
                 print('Please enter correct format.')
-    
+        
     # get user input for groupCheckOut function    
     def get_input_from_user_checkout(self):
         # get current time 
         current_time = self.getCurrentTime()
         name = ''
         # user input the user name and user id that they help to check out
+        self.checkOut()
         while name != "q":
             current_check_in_location = []
             name, id = input(f'{self.user_name} Enter your family member name (enter _ if space) and id that you wish to check out or type \'q 1\' if finished inputting: \n').split()
-            if name != 'q' and id != '1':
-                df = pd.read_csv(f'client_file/{id}_{name}.csv')
-                for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
-                    current_check_in_location.append(row['Location'])
-                # user select the location that they want to check out 
-                print('Please type the location that you want to check out: ')
-                for i in current_check_in_location:
-                    print(i)
-                check_out_location = input("")
-                df = pd.read_csv(f'client_file/{id}_{name}.csv')
-                for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
-                    if row['Location'] == check_out_location:
-                        df.loc[index, 'Check Out Time'] = current_time
-                        df.loc[index, 'Current Check In status'] = 1
-                # drop dataframe Unname column 
-                df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
-                df.to_csv(f'client_file/{id}_{name}.csv')
-                groupCheckOutRequest = SafeEntry_pb2.GroupCheckOutRequest(name=name, id=id, location=check_out_location, check_out_time=current_time)
-                yield groupCheckOutRequest
-                time.sleep(1)
-            else:
+            try:
+                if name != 'q' and id != '1':
+                    df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                    for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+                        current_check_in_location.append(row['Location'])
+                    # user select the location that they want to check out 
+                    print('Please type the location that you want to check out: ')
+                    for i in current_check_in_location:
+                        print(i)
+                    check_out_location = input("")
+                    df = pd.read_csv(f'client_file/{id}_{name}.csv')
+                    for index, row in df.loc[df['Current Check In status'] == 0].iterrows():
+                        if row['Location'] == check_out_location:
+                            df.loc[index, 'Check Out Time'] = current_time
+                            df.loc[index, 'Current Check In status'] = 1
+                    # drop dataframe Unname column 
+                    df.drop(df.filter(regex="Unname"),axis=1, inplace=True)
+                    df.to_csv(f'client_file/{id}_{name}.csv')
+                    groupCheckOutRequest = SafeEntry_pb2.GroupCheckOutRequest(name=name, id=id, location=check_out_location, check_out_time=current_time)
+                    yield groupCheckOutRequest
+                    time.sleep(1)
+            except:
                 print('Please enter correct format.')
 
             
