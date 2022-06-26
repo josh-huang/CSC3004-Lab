@@ -219,9 +219,9 @@ class SafeEntry(SafeEntry_pb2_grpc.SafeEntryServicer):
                     phone_number = str("+"+str(affected_user_phone[i]))
                     
                     if future_hour == '00':
-                        pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, 00, int(future_minutes), wait_time=10)
+                        pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, 00, int(future_minutes), wait_time=20)
                     else:        
-                        pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, int(future_hour), int(future_minutes), wait_time=10)
+                        pywhatkit.sendwhatmsg(phone_number, messgae_whatsapp, int(future_hour), int(future_minutes), wait_time=20)
             
             reply_message = 'Updates have been received for : ' + request.location_name  + ' at Date and Time: ' + request.visit_date + " and CheckOut Date and Time: " + request.checkOut_date
             return SafeEntry_pb2.MOHReply(res=reply_message)
